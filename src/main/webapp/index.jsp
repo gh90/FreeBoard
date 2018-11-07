@@ -13,5 +13,8 @@
 	<body>
 		<c:url value="/showMessage" var="messageUrl" />
 		<a href="${messageUrl}">Click to enter</a>
+		<c:url value="/freeBoard" var="freeBoardUrl" />
+		<br>
+        <a href="${freeBoardUrl}">Click to FreeBoard</a>
 	</body>
 </html>
