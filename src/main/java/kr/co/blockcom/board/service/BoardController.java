@@ -1,21 +1,23 @@
 package kr.co.blockcom.board.service;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
+@RequestMapping("/board")
 public class BoardController {
 	
-	@RequestMapping("/freeBoard")
+	@GetMapping("/list")
 	public String freeBoardList() {
 		
-		return "/freeBoard";
+		return "/board/list";
 	}
 	
-	@RequestMapping("/freeBoard/write")
+	@GetMapping("/write")
 	public String freeBoardWrite() {
 		
-		return "/freeBoard/write";
+		return "/board/write";
 	}
 
 }

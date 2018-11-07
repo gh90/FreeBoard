@@ -21,12 +21,9 @@ PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN" "http://
 	<definition name="/showMessage" extends="common">
 		<put-attribute name="right" value="/WEB-INF/views/showMessage.jsp" />
 	</definition>
-	<!--  board VIEW -->
-	<definition name="/freeBoard" extends="common">
-        <put-attribute name="right" value="/WEB-INF/views/board/freeBoard.jsp" />
-    </definition>
-    <!-- board 하위 뷰 -->
-    <definition name="/freeBoard/*" extends="common">
-        <put-attribute name="right" value="/WEB-INF/views/board/{1}.jsp" />
-    </definition>
+
+	<!-- board 하위 뷰 -->
+	<definition name="/board/*" extends="common">
+		<put-attribute name="right" value="/WEB-INF/views/board/{1}.jsp" />
+	</definition>
 </tiles-definitions>
