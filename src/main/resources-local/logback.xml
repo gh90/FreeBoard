@@ -23,7 +23,7 @@ See here for more details: http://gordondickens.com/wordpress/2013/03/27/sawing-
 			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread][%method:%line] %-5level %logger{36} - %msg%n</pattern>
 		</encoder>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<fileNamePattern>logs/btrade_db_api-log.%d{yyyy-MM-dd}_%i.log</fileNamePattern>
+			<fileNamePattern>logs/btrade_board-log.%d{yyyy-MM-dd}_%i.log</fileNamePattern>
 			
 			<!-- each file should be at most 10MB, keep 30 days worth of history -->
 			<maxHistory>30</maxHistory>
@@ -38,7 +38,7 @@ See here for more details: http://gordondickens.com/wordpress/2013/03/27/sawing-
 			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread][%method:%line] %-5level %logger{36} - %msg%n</pattern>
 		</encoder>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<fileNamePattern>logs/btrade_db_api-error-log.%d{yyyy-MM-dd}_%i.log</fileNamePattern>
+			<fileNamePattern>logs/btrade_board-error-log.%d{yyyy-MM-dd}_%i.log</fileNamePattern>
 			
 			<!-- each file should be at most 10MB, keep 30 days worth of history -->
 			<maxHistory>30</maxHistory>
