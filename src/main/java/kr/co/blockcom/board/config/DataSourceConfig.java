@@ -7,17 +7,27 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 @Configuration
 @MapperScan({"kr.co.blockcom.*"})
+@PropertySource(value = { "classpath:application.properties" }, name = "datasource")
 public class DataSourceConfig {
+	
+	@Value("${datasource.url}")
+	private String url;
+	
 	//TODO 설정 프로 퍼티로 빼기
 	@Bean(name="dataSource",destroyMethod = "close")
 	public DataSource dataSource() {
+		
+		System.out.println(url);
+		
 		BasicDataSource dataSource =new BasicDataSource();
 		dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
 		dataSource.setUrl("jdbc:mysql://127.0.0.1:3306/btrade_board?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC");
