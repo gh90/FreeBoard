@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import kr.co.blockcom.board.biz.boardfree.mapper.BoardFreeMapper;
+import kr.co.blockcom.board.vo.board.BoardFree;
 
 @Service
 public class BoardFreeService {
@@ -23,6 +24,11 @@ public class BoardFreeService {
 	public Map<String, Object> selectPost(Map<String, Object> paramMap) throws Exception{
 		logger.info("selectPost : {}", paramMap);
 		return boardFreeMapper.selectPost(paramMap);
+	}
+	
+	public int insertPost(BoardFree boardFree) throws Exception{
+		logger.info("insertPost : {}", boardFree);
+		return boardFreeMapper.insertPost(boardFree);
 	}
 	
 
