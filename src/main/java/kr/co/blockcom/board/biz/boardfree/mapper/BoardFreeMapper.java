@@ -1,5 +1,6 @@
 package kr.co.blockcom.board.biz.boardfree.mapper;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Repository;
@@ -21,5 +22,12 @@ public interface BoardFreeMapper {
 	 * @return
 	 */
 	 int insertPost(BoardFree boardFree) throws Exception;
+	 
+	/**
+	 * 글 목록조회
+	 * @param param
+	 * @return
+	 */
+	 List<BoardFree> selectPostList(BoardFree boardFree) throws Exception;
 
 }

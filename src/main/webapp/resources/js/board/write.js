@@ -19,17 +19,17 @@ function fn_post_register(){
 			"password" : $("#password").val(),
 			"title" : $("#title").val(),
 			"content" : $("#content").val(),
-			"notice_flag" : $("#notice_flag").val(),
-			"secret_flag" : $("#secret_flag").val()
+			"notice_flag" : fn_boolean_check($("#notice_flag").prop("checked")),
+			"secret_flag" : fn_boolean_check($("#secret_flag").prop("checked"))
 		};
 	
 	
 	$.ajax({
 		type: 'post',
-		url: '/board/writeSubmit.do',
-		data: register_data,
+		url: '/board/writeSubmit',
+		data: JSON.stringify(register_data),
 		dataType: "json",
-		contentType : 'application/json',
+		contentType : 'application/json; charset=UTF-8',
 		success: function (data) {
 			alert("글 등록 성공")
 		},
@@ -39,4 +39,9 @@ function fn_post_register(){
 	});
 	
 	one_click="Y"
+}
+
+
+function fn_boolean_check(check){
+	return check==true?"Y":"N";
 }

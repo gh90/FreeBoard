@@ -1,5 +1,6 @@
 package kr.co.blockcom.board.biz.boardfree.service;
 
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -29,6 +30,11 @@ public class BoardFreeService {
 	public int insertPost(BoardFree boardFree) throws Exception{
 		logger.info("insertPost : {}", boardFree);
 		return boardFreeMapper.insertPost(boardFree);
+	}
+	
+	public List<BoardFree> selectPostList(BoardFree reqVo) throws Exception{
+		logger.info("selectPostList : {}", reqVo);
+		return boardFreeMapper.selectPostList(reqVo);
 	}
 	
 
