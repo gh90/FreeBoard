@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import kr.co.blockcom.board.biz.boardfree.service.BoardFreeService;
 import kr.co.blockcom.board.vo.board.BoardFree;
@@ -26,7 +27,7 @@ public class BoardController {
 	private static final Logger logger = LoggerFactory.getLogger(BoardController.class);
 	
 	private final BoardFreeService boardFreeService;
-	
+		
 	@GetMapping("/list")
 	public String freeBoardList() {
 		return "/board/list";
@@ -35,6 +36,11 @@ public class BoardController {
 	@GetMapping("/write")
 	public String freeBoardWrite() {		
 		return "/board/write";
+	}
+	
+	@GetMapping("/postView")
+	public String postView() {
+		return "/board/postView";
 	}
 	
 //	글등록 
@@ -65,13 +71,25 @@ public class BoardController {
 		}
 		return new ResponseEntity<List<BoardFree>>(resultVoList,HttpStatus.OK) ;
 	}
+//	글 내용
+	@GetMapping("/postContent")
+	public ResponseEntity<BoardFree> postContent(@RequestParam int seq) {
+		BoardFree resultVo=new BoardFree();
+		try {
+			resultVo = boardFreeService.selectPost(seq);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return new ResponseEntity<BoardFree>(resultVo,HttpStatus.OK) ;
+	}
 	
 	
 	@GetMapping("/test")
 	public String testList() {
 		String test="";
 		try {
-			test = boardFreeService.selectPost(new HashMap<String,Object>()).toString();
+//			test = boardFreeService.selectPost(new HashMap<String,Object>()).toString();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -14,7 +14,7 @@ public interface BoardFreeMapper {
 	 * @param param
 	 * @return
 	 */
-	Map<String, Object> selectPost(Map<String, Object> paramMap) throws Exception;
+	BoardFree selectPost(int seq) throws Exception;
 	
 	/**
 	 * 글 등록

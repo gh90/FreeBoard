@@ -34,7 +34,7 @@
 				notice_flag='N'
 	</select>
 	
-    <select id="selectPost" parameterType="hashmap" resultType="kr.co.blockcom.board.vo.board.BoardFree">
+    <select id="selectPost" parameterType="int" resultType="kr.co.blockcom.board.vo.board.BoardFree">
 	    SELECT
 	       seq
 	       ,category

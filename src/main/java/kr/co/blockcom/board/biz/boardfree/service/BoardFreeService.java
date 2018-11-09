@@ -22,9 +22,9 @@ public class BoardFreeService {
 		this.boardFreeMapper=boardFreeMapper;
 	}
 	
-	public Map<String, Object> selectPost(Map<String, Object> paramMap) throws Exception{
-		logger.info("selectPost : {}", paramMap);
-		return boardFreeMapper.selectPost(paramMap);
+	public BoardFree selectPost(int seq) throws Exception{
+		logger.info("selectPost : {}", seq);
+		return boardFreeMapper.selectPost(seq);
 	}
 	
 	public int insertPost(BoardFree boardFree) throws Exception{
