@@ -2,6 +2,10 @@
  * 
  */
 
+$(document).ready(function(){
+	fn_select_postList();
+})
+
 var one_click="Y";
 
 
@@ -19,14 +23,12 @@ function fn_select_postList(){
 		dataType: "json",
 		contentType : 'application/json; charset=UTF-8',
 		success: function (data) {
-			console.log("목록");
-			console.log(data);
 			var postList_html="";
 			
 			for(var temp_list in data ){
 				postList_html+="<tr>";
 				postList_html+="<td>"+data[temp_list].seq+"</td>";
-				postList_html+="<td><a href='' >";
+				postList_html+="<td><a href='/board/postView?post_id="+data[temp_list].seq+"'>";
 				postList_html+=data[temp_list].title;
 				postList_html+="</a></td>";
 				postList_html+="<td>";

@@ -24,14 +24,18 @@
 		       ,view_count
 		       ,reg_date
 		       ,secret_flag
-		    FROM
-				board_free
-		    WHERE
-				comment_flag='N'
-			AND
-				delete_flag='N'
-			AND
-				notice_flag='N'
+	    FROM
+			board_free
+	    WHERE
+			comment_flag='N'
+		AND
+			delete_flag='N'
+		AND
+			notice_flag='N'
+		ORDER BY
+			seq DESC
+				
+			
 	</select>
 	
     <select id="selectPost" parameterType="int" resultType="kr.co.blockcom.board.vo.board.BoardFree">
