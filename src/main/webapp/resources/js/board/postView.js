@@ -3,7 +3,7 @@
  */
 $(document).ready(function(){
 	$("#post_modify").on("click",function(){
-		fn_post_modify();
+		fn_modify_mode();
 	});
 })
 
@@ -35,6 +35,13 @@ function fn_post_view(post_id){
 	});
 	
 	
+}
+
+function fn_modify_mode(){
+	$("#title").prop("colspan",3);
+	$("#title").html("<input type='text' style='float: left' size='100' maxlength='100' value='"+$("#title").text()+"'/>");
+	$("#content").prop("colspan",3);
+	$("#content").html("<textarea cols='72' rows='20' value=''>"+$('#content').text()+"</textarea>");
 }
 
 function fn_post_modify(){

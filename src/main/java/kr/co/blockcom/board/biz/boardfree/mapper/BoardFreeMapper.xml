@@ -61,7 +61,7 @@
     </select>
 
     <insert id="insertPost" parameterType="kr.co.blockcom.board.vo.board.BoardFree" useGeneratedKeys="true" keyProperty="seq" >
-        INSERT INTO board_Free(
+        INSERT INTO board_free(
             category
             ,writer
             ,password

@@ -12,7 +12,7 @@
 		</tr>
 		<tr>
             <td>제 목 </td>
-            <td colspan="4" id="title"></td>
+            <td colspan="4" id="title" ></td>
         </tr>
         <tr>
 			<td>작성자</td>
