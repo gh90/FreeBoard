@@ -7,12 +7,16 @@
     	<tr>
 			<td width="30">카테고리 </td>
                <td id="category">카테고리</td>
-               <td>수정일시</td>
-               <td id="mod_date">수정2일시</td>
+               <td>비밀번호</td>
+               <td>
+					<input type="password" id="password">
+               </td>
 		</tr>
 		<tr>
             <td>제 목 </td>
-            <td colspan="4" id="title"></td>
+            <td colspan="4">
+            	<input id="title" type="text" size="70" maxlength="100" value=""/>
+            </td>
         </tr>
         <tr>
 			<td>작성자</td>
@@ -22,22 +26,18 @@
         </tr>
         <tr height="200">
             <td>내 용</td>
-            <td  colspan="4" id="content"></td>        
+            <td  colspan="4">
+            	<textarea id="content" cols="72" rows="20"></textarea>
+            </td>        
         </tr>
         <tr align="center" valign="middle">
             <td colspan="5">	                
                 <input type="button" value="목록" >
-                <input id="post_modify" type="button" value="수정" >
+                <input id="" type="button" value="수정" >
                 <input id="" type="button" value="삭제" >            
             </td>
         </tr>
     </table>    
 
-<script type="text/javascript">
-var post_id ='${post_id}';
-console.log("get" + post_id)
-$(document).ready(function(){
-	init(post_id);
-})
-</script>
-<script src="/resources/js/board/postView.js" defer="defer"></script>
+
+<script src="/resources/js/board/modify.js" defer="defer"></script>
