@@ -27,9 +27,24 @@ public class BoardFreeService {
 		return boardFreeMapper.selectPost(seq);
 	}
 	
+	public BoardFree selectPostPassword(int seq) throws Exception{
+		logger.info("selectPassword : {}", seq);
+		return boardFreeMapper.selectPostPassword(seq);
+	}
+	
 	public int insertPost(BoardFree boardFree) throws Exception{
 		logger.info("insertPost : {}", boardFree);
 		return boardFreeMapper.insertPost(boardFree);
+	}
+	
+	public int updatePost(BoardFree boardFree) throws Exception{
+		logger.info("updatePost : {}", boardFree);
+		return boardFreeMapper.updatePost(boardFree);
+	}
+	
+	public int updateViewCount(BoardFree boardFree) throws Exception{
+		logger.info("updateViewCount : {}", boardFree);
+		return boardFreeMapper.updateViewCount(boardFree);
 	}
 	
 	public List<BoardFree> selectPostList(BoardFree reqVo) throws Exception{

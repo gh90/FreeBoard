@@ -34,8 +34,6 @@
 			notice_flag='N'
 		ORDER BY
 			seq DESC
-				
-			
 	</select>
 	
     <select id="selectPost" parameterType="int" resultType="kr.co.blockcom.board.vo.board.BoardFree">
@@ -59,8 +57,22 @@
 	    AND
 	       delete_flag='N'
     </select>
+    
+    <select id="selectPostPassword" parameterType="int" resultType="kr.co.blockcom.board.vo.board.BoardFree">
+	    SELECT
+	       seq
+	       ,password
+	    FROM
+	       board_free
+	    WHERE
+	       seq=#{seq}
+	    AND	    
+	       delete_flag='N'
+		AND
+	       comment_flag='N'
+    </select>
 
-    <insert id="insertPost" parameterType="kr.co.blockcom.board.vo.board.BoardFree" useGeneratedKeys="true" keyProperty="seq" >
+    <insert id="insertPost" parameterType="kr.co.blockcom.board.vo.board.BoardFree" useGeneratedKeys="true" keyProperty="seq">
         INSERT INTO board_free(
             category
             ,writer
@@ -83,4 +95,24 @@
             ,'N'
         )
     </insert>
+    
+    <update id="updatePost" parameterType="kr.co.blockcom.board.vo.board.BoardFree">
+		UPDATE board_free
+		SET
+			title = #{title}
+			 , content = #{content}
+			 , mod_date = now()
+			 
+		WHERE
+			seq = #{seq}
+		AND
+			password = #{password}
+	</update>
+	<update id="updateViewCount" parameterType="kr.co.blockcom.board.vo.board.BoardFree" >
+		UPDATE board_free
+		SET
+			view_count = view_count+1
+		WHERE
+			seq = #{seq}
+	</update>
 </mapper>

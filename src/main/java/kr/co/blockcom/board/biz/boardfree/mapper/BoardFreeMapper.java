@@ -1,7 +1,6 @@
 package kr.co.blockcom.board.biz.boardfree.mapper;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
@@ -22,6 +21,28 @@ public interface BoardFreeMapper {
 	 * @return
 	 */
 	 int insertPost(BoardFree boardFree) throws Exception;
+	 
+	 /**
+	 * 패스워드 가져오기
+	 * @param param
+	 * @return
+	 */
+	 
+	 BoardFree selectPostPassword(int seq) throws Exception;
+	 
+	 /**
+		 * 글 수정
+		 * @param param
+		 * @return
+		 */
+	 int updatePost(BoardFree boardFree) throws Exception;
+	 
+	 /**
+		 * 조회수 증가
+		 * @param param
+		 * @return
+		 */
+	 int updateViewCount(BoardFree boardFree) throws Exception;
 	 
 	/**
 	 * 글 목록조회

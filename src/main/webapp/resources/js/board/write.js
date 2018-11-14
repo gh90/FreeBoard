@@ -10,6 +10,9 @@ $("#submit").on("click",function(){
 	}
 })
 
+$("#post_list").on("click",function(){
+	location.href="/board/list";
+})
 
 function fn_post_register(){
 	one_click="N"

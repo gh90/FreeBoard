@@ -3,6 +3,10 @@
  */
 
 $(document).ready(function(){
+	$("#write").on("click",function(){
+		location.href="/board/write";
+	})
+	
 	fn_select_postList();
 })
 

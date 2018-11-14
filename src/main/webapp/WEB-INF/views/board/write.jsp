@@ -51,7 +51,7 @@
 	            <td colspan="5">
 	                <input type="reset" value="작성취소" >
 	                <input id="submit" type="button" value="등록" >
-	                <input type="button" value="목록" >            
+	                <input id="post_list" type="button" value="목록" >            
 	            </td>
 	        </tr>
 	    </table>    
