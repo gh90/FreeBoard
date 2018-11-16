@@ -33,17 +33,20 @@ function fn_post_register(){
 		data: JSON.stringify(register_data),
 		dataType: "json",
 		contentType : 'application/json; charset=UTF-8',
-		success: function (data) {
-			alert("글 등록 성공")
+		success: function (json) {
+			if("0000"==json.code){
+				alert("글이 등록되었습니다.");
+				location.href ="/board/postView?post_id="+json.data
+			}else{
+				alert(json.message);
+			}
 		},
 		error: function (xhr, status, error) {
 			alert("글 등록 실패")
 		}
 	});
-	
 	one_click="Y"
 }
-
 
 function fn_boolean_check(check){
 	return check==true?"Y":"N";

@@ -108,6 +108,17 @@
 		AND
 			password = #{password}
 	</update>
+
+	<update id="deletePost" parameterType="int">
+		UPDATE board_free
+		SET
+			delete_flag='Y'
+		WHERE
+			seq = #{seq}
+		AND
+			delete_flag='N'
+	</update>
+
 	<update id="updateViewCount" parameterType="kr.co.blockcom.board.vo.board.BoardFree" >
 		UPDATE board_free
 		SET

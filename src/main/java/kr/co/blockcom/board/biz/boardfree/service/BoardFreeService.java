@@ -42,6 +42,11 @@ public class BoardFreeService {
 		return boardFreeMapper.updatePost(boardFree);
 	}
 	
+	public int deletePost(int seq) throws Exception{
+		logger.info("updatePost : {}", seq);
+		return boardFreeMapper.deletePost(seq);
+	}
+	
 	public int updateViewCount(BoardFree boardFree) throws Exception{
 		logger.info("updateViewCount : {}", boardFree);
 		return boardFreeMapper.updateViewCount(boardFree);

@@ -20,7 +20,7 @@ public interface BoardFreeMapper {
 	 * @param param
 	 * @return
 	 */
-	 int insertPost(BoardFree boardFree) throws Exception;
+	int insertPost(BoardFree boardFree) throws Exception;
 	 
 	 /**
 	 * 패스워드 가져오기
@@ -36,6 +36,13 @@ public interface BoardFreeMapper {
 		 * @return
 		 */
 	 int updatePost(BoardFree boardFree) throws Exception;
+	 
+	 /**
+		 * 글 삭제
+		 * @param param
+		 * @return
+		 */
+	 int deletePost(int seq) throws Exception;
 	 
 	 /**
 		 * 조회수 증가

@@ -57,36 +57,35 @@ public class BoardController {
 		return "/board/postView";
 	}
 	
-	@PostMapping(value = {"/postView"},consumes=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ResultVo<BoardFree>> postView(@RequestBody String post_id,HttpSession session) {
+	//게시글 보기
+	@PostMapping(value = {"/postView"})
+	public ResponseEntity<ResultVo<BoardFree>> postView(@RequestParam(value="post_id") String seq,HttpSession session) {
 		ResultVo<BoardFree> result = new ResultVo<BoardFree>();
 		BoardFree vo=new BoardFree();
 		try {
-			vo = boardFreeService.selectPost(Integer.parseInt(post_id));
+			vo = boardFreeService.selectPost(Integer.parseInt(seq));
 			if(vo==null) {
 				result.setReturnStatusCode(ReturnStatusCode.NO_POST);
 			}else {
-				if("Y".equals(vo.getSecret_flag())) {
-					
-				}
-				
-				
 				long post_view_time=0;
 				long current_time =System.currentTimeMillis();
 
-				if(session.getAttribute("post_view_time_"+post_id)!=null) {
-					post_view_time=(long)session.getAttribute("post_view_time_"+post_id);
+				if(session.getAttribute("post_view_time_"+seq)!=null) {
+					post_view_time=(long)session.getAttribute("post_view_time_"+seq);
 				}
 				
-				session.setAttribute("post_view_time_"+post_id, current_time);
+				session.setAttribute("post_view_time_"+seq, current_time);				
 				
-				
-				if(current_time-post_view_time>10*1000) {
+				if(current_time-post_view_time>10*1000 &&!"Y".equals(vo.getSecret_flag())) {
 					boardFreeService.updateViewCount(vo);
-					
 				}
+				
+				vo = boardFreeService.selectPost(Integer.parseInt(seq));
 				result.setReturnStatusCode(ReturnStatusCode.SUCCESS);
-				vo = boardFreeService.selectPost(Integer.parseInt(post_id));
+				if("Y".equals(vo.getSecret_flag())) {
+					vo.setTitle("비밀글 입니다.");
+					vo.setContent("비밀글입니다.");
+				}
 				result.setData(vo);
 			}
 			
@@ -102,18 +101,32 @@ public class BoardController {
 	
 //	글등록 
 	@PostMapping(value = {"/writeSubmit"},consumes=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Integer> writeSubmit(@RequestBody BoardFree vo){
+	public ResponseEntity<ResultVo<Integer>> writeSubmit(@RequestBody BoardFree vo){
+		ResultVo<Integer> result = new ResultVo<Integer>();
 		logger.info("## writeSubmit ##");
 		logger.debug(vo.toString());
 		
 		try {
-			boardFreeService.insertPost(vo);
+			if(null==vo.getTitle() || "".equals(vo.getTitle())) {
+				result.setReturnStatusCode(ReturnStatusCode.NO_TITLE);
+			}else if(null==vo.getContent() || "".equals(vo.getContent())) {
+				result.setReturnStatusCode(ReturnStatusCode.NO_COTENT);
+			}else if(null==vo.getPassword() || "".equals(vo.getPassword())) {
+				result.setReturnStatusCode(ReturnStatusCode.NO_PASSWORD);
+			}else if(null==vo.getWriter() || "".equals(vo.getWriter())) {
+				result.setReturnStatusCode(ReturnStatusCode.NO_WRITER);
+			}else if(1==boardFreeService.insertPost(vo)){
+				result.setData(vo.getSeq());
+				result.setReturnStatusCode(ReturnStatusCode.SUCCESS);
+			}else {
+				result.setReturnStatusCode(ReturnStatusCode.FAIL);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return new ResponseEntity<Integer>(0, HttpStatus.INTERNAL_SERVER_ERROR);
+			result.setReturnStatusCode(ReturnStatusCode.FAIL);
 		}
 		
-		return new ResponseEntity<Integer>(vo.getSeq() , HttpStatus.OK);
+		return new ResponseEntity<ResultVo<Integer>>(result , HttpStatus.OK);
 	}
 	
 //	글 리스트
@@ -157,6 +170,63 @@ public class BoardController {
 			result.setReturnStatusCode(ReturnStatusCode.FAIL);
 		}
 		return new ResponseEntity<ResultVo<Integer>>(result , HttpStatus.OK);
+	}
+	
+//	글삭제 
+	@PostMapping(value = {"/deleteSubmit"})
+	public ResponseEntity<ResultVo<Integer>> deleteSubmit(@RequestParam(value="post_id") String seq,@RequestParam(value="delete_password") String password){
+		ResultVo<Integer> result = new ResultVo<Integer>();
+		BoardFree passwordVo =new BoardFree();
+		logger.info("## deleteSubmit ##");
+		try {			
+			passwordVo = boardFreeService.selectPostPassword(Integer.parseInt(seq));
+			if(null == password || "".equals(password)) {
+				result.setReturnStatusCode(ReturnStatusCode.NO_PASSWORD);
+			}else if(passwordVo.getPassword().equals(password)) {
+				int deleteResult=boardFreeService.deletePost(Integer.parseInt(seq));
+				if(1==deleteResult) {
+					result.setReturnStatusCode(ReturnStatusCode.SUCCESS);
+				}else {
+					result.setReturnStatusCode(ReturnStatusCode.FAIL);
+				}
+			}else {
+				result.setReturnStatusCode(ReturnStatusCode.WRONG_PASSWORD);
+			}
+		} catch (NumberFormatException e) {
+			result.setReturnStatusCode(ReturnStatusCode.INVALID_PAGE);
+			e.printStackTrace();
+		} catch (Exception e) {
+			result.setReturnStatusCode(ReturnStatusCode.FAIL);
+			e.printStackTrace();
+		}
+		return new ResponseEntity<ResultVo<Integer>>(result , HttpStatus.OK);
+	}
+	
+	//비밀글 보기
+	@PostMapping(value = {"/secretView"})
+	public ResponseEntity<ResultVo<BoardFree>> secretView(@RequestParam(value="post_id") String seq,@RequestParam(value="secret_password") String password){
+		ResultVo<BoardFree> result = new ResultVo<BoardFree>();
+		BoardFree returnVo = new BoardFree();
+		BoardFree passwordVo = new BoardFree();
+		try {			
+			passwordVo = boardFreeService.selectPostPassword(Integer.parseInt(seq));
+			if(null == password || "".equals(password)) {
+				result.setReturnStatusCode(ReturnStatusCode.NO_PASSWORD);
+			}else if(passwordVo.getPassword().equals(password)) {
+				returnVo=boardFreeService.selectPost(Integer.parseInt(seq));
+				result.setData(returnVo);
+				result.setReturnStatusCode(ReturnStatusCode.SUCCESS);
+			}else {
+				result.setReturnStatusCode(ReturnStatusCode.WRONG_PASSWORD);
+			}
+		} catch (NumberFormatException e) {
+			result.setReturnStatusCode(ReturnStatusCode.INVALID_PAGE);
+			e.printStackTrace();
+		} catch (Exception e) {
+			result.setReturnStatusCode(ReturnStatusCode.FAIL);
+			e.printStackTrace();
+		}
+		return new ResponseEntity<ResultVo<BoardFree>>(result , HttpStatus.OK);
 	}
 	
 	
