@@ -249,6 +249,18 @@ public class BoardController {
 		return new ResponseEntity<ResultVo<Integer>>(result , HttpStatus.OK);
 	}
 	
+	@PostMapping("/commentList")
+	public ResponseEntity<List<BoardFree>> commentList(@RequestBody BoardFree vo) {
+		List<BoardFree> resultVoList=new ArrayList<>();
+		try {
+			resultVoList = boardFreeService.selectCommentList(vo);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return new ResponseEntity<List<BoardFree>>(resultVoList,HttpStatus.OK) ;
+	}
+	
 	
 	@GetMapping("/test")
 	public String testList() {

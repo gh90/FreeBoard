@@ -148,4 +148,23 @@
             ,'Y'
         )
 	</insert>
+	
+	<select id="selectCommentList" parameterType="kr.co.blockcom.board.vo.board.BoardFree" resultType="kr.co.blockcom.board.vo.board.BoardFree">
+		SELECT
+		       seq
+		       ,writer
+				,mod_date
+		       ,reg_date
+		       ,secret_flag
+	    FROM
+			board_free
+	    WHERE
+	    	parent_seq = #{parent_seq}
+	    AND	
+			comment_flag='Y'
+		AND
+			delete_flag='N'
+		ORDER BY
+			seq DESC
+	</select>
 </mapper>

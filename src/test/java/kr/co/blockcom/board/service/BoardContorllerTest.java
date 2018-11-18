@@ -31,7 +31,7 @@ public class BoardContorllerTest {
 		}
 	}
 	
-	@Test
+//	@Test
 	public void insertCommentTest() {
 		BoardFree vo =new BoardFree();
 		vo.setContent("댓글 테이스트");
@@ -43,6 +43,20 @@ public class BoardContorllerTest {
 		
 		try {
 			System.out.println(boardFreeService.insertComment(vo));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void selectCommentTest() {
+		BoardFree vo =new BoardFree();
+		vo.setParent_seq(6);
+		
+		
+		try {
+			System.out.println(boardFreeService.selectCommentList(vo));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

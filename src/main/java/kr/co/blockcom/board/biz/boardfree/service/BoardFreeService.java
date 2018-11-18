@@ -74,5 +74,10 @@ public class BoardFreeService {
 		logger.info("insertPost : {}", boardFree);
 		return boardFreeMapper.insertComment(boardFree);
 	}
+	
+	public List<BoardFree> selectCommentList(BoardFree boardFree) throws Exception{
+		logger.info("selectCommentList : {}", boardFree);
+		return boardFreeMapper.selectCommentList(boardFree);
+	}
 
 }

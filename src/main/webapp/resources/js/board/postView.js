@@ -43,7 +43,17 @@ $(document).ready(function(){
 		}else{
 			return false;
 		}
+	});
+	
+	$("#cmt_reg_submit").on("click",function(){
+		if(confirm("정말 등록하시겠습니까?")){
+			fn_comment_register();
+		}else{
+			return false;
+		}
 	});	
+	
+	
 })
 
 
@@ -82,8 +92,39 @@ function fn_post_view(post_id){
 			console.log(error);
 		}
 	});
-	
-	
+}
+
+function fn_cmt_view(post_id){
+	$.ajax({
+		type: 'post',
+		data: {"post_id":post_id}, 
+		url: '/board/postView',
+		success: function (json) {
+			if("0000"==json.code){
+				$("#category").text(json.data.category);
+				$("#mod_date").text(json.data.mod_date);
+				$("#title").text(json.data.title);
+				$("#writer").text(json.data.writer);
+				$("#reg_date").text(json.data.reg_date);
+				$("#content").text(json.data.content);
+				$("#view_count").text(json.data.view_count);
+				
+				if("Y"==json.data.secret_flag){
+					$(".secret_show").show();
+					$(".secret_hide").hide();
+				}
+				
+			}else{
+				alert(json.message);
+				location.href="/board/list";
+			}
+		},
+		error: function (xhr, status, error) {
+			console.log(xhr);
+			console.log(status);
+			console.log(error);
+		}
+	});
 }
 
 function fn_modify_mode(){
@@ -199,3 +240,84 @@ function fn_delete_mode_no(){
 	$(".delete_show").hide();
 }
 
+function fn_comment_register(){
+	var register_data = {
+			"category" : "1",
+			"parent_seq" : post_id,
+			"writer" : $("#cmt_writer").val(),
+			"password" : $("#cmt_password").val(),
+			"content" : $("#cmt_content").val(),
+			"secret_flag" : fn_boolean_check($("#cmt_secret_flag").prop("checked"))
+		};
+	
+	
+	$.ajax({
+		type: 'post',
+		url: '/board/writeCommentSubmit',
+		data: JSON.stringify(register_data),
+		dataType: "json",
+		contentType : 'application/json; charset=UTF-8',
+		success: function (json) {
+			if("0000"==json.code){
+				alert("글이 등록되었습니다.");
+				location.href ="/board/postView?post_id="+json.data
+			}else{
+				alert(json.message);
+			}
+		},
+		error: function (xhr, status, error) {
+			alert("글 등록 실패")
+		}
+	});
+	
+}
+
+
+function fn_select_commnetList(){
+	one_click="N"
+	var comment_list_data = {
+			"category" : "1"/*$("#category").val()*/
+			,"parent_seq":post_id
+		};
+	
+	$.ajax({
+		type: 'post',
+		url: '/board/commnetList',
+		data: JSON.stringify(comment_list_data),
+		dataType: "json",
+		contentType : 'application/json; charset=UTF-8',
+		success: function (data) {
+			var commenList_html="";
+			
+			for(var temp_list in data ){
+				commenList_html+="<tr>";
+				commenList_html+="<td>"+data[temp_list].writer+"</td><td>등록 시간 : "+data[temp_list].reg_date;
+				commenList_html+="<td><a href='/board/postView?post_id="+data[temp_list].seq+"'>";
+				commenList_html+=data[temp_list].title;
+				commenList_html+="</a></td>";
+				commenList_html+="<td>";
+				commenList_html+=data[temp_list].writer;
+				commenList_html+="</td>";
+				commenList_html+="<td>";
+				commenList_html+=data[temp_list].reg_date;
+				commenList_html+="</td>";
+				commenList_html+="<td>";
+				commenList_html+=data[temp_list].view_count;
+				commenList_html+="</td>";
+				commenList_html+="</tr>";
+				
+			}
+			$("#postList").html(commenList_html);
+			
+		},
+		error: function (xhr, status, error) {
+			console.log("실패");
+		}
+	});
+	
+	one_click="Y"
+}
+
+function fn_boolean_check(check){
+	return check==true?"Y":"N";
+}

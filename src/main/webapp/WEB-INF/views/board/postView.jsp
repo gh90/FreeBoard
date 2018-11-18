@@ -45,8 +45,27 @@
                 <input class="modify_hide secret_hide delete_hide" id="post_delete" type="button" value="삭제" >            
             </td>
         </tr>
+    </table>
+    <h2  align="center">댓글영역</h2>
+    <table id="comment_list" style="text-align: left;width:700px;margin: auto;" border="2" bordercolor="black">
+    	<!-- <tr style="text-align: center;">
+			<td colspan="3">댓글이 없습니다.</td>
+		</tr> -->
+			<tr>
+				<td>hole</td><td>등록시간 : </td><td colspan="2"><input type="button" value="수정하기"><input type="button" value="삭제하기"></td> 
+			</tr>
+			<tr>
+				<td colspan="5">내일은 월요일</td>
+			</tr>
     </table>    
-
+	<table style="text-align: left;width:700px;margin: auto;" border="2" bordercolor="black">
+		<tr>
+			<td>작성자 : <input id="cmt_writer" type="text"></td><td>패스워드 : <input  id="cmt_password" type="password"></td><td> 비밀 : <input  id="cmt_secret_flag" type="checkbox" value="Y"></td>
+		</tr>
+		<tr>
+			<td colspan="2" style="border-color: white;">내용 : <input  id="cmt_content" type="text" size="70"></td><td><input type="button" id="cmt_reg_submit" value="등록하기"></td>
+		</tr>
+	</table>
 <script type="text/javascript">
 var post_id ='${post_id}';
 $(document).ready(function(){
