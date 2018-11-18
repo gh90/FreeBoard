@@ -1,5 +1,6 @@
 package kr.co.blockcom.board.biz.boardfree.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -52,5 +53,26 @@ public class BoardFreeService {
 		return boardFreeMapper.selectPostList(reqVo);
 	}
 	
+	public List<BoardFree> postListWithSecret(BoardFree reqVo) throws Exception{
+		logger.info("selectpostListWtihSecret : {}", reqVo);
+		List<BoardFree> returnList = new ArrayList<>();
+		returnList=selectPostList(reqVo);
+		
+		for(BoardFree vo :returnList) {
+			if("Y".equals(vo.getSecret_flag())) {
+				vo.setTitle("[비밀글]"+vo.getTitle());
+			}
+		}
+		
+		return returnList;
+	}
+	
+	
+	//대글 관련
+	
+	public int insertComment(BoardFree boardFree) throws Exception{
+		logger.info("insertPost : {}", boardFree);
+		return boardFreeMapper.insertComment(boardFree);
+	}
 
 }

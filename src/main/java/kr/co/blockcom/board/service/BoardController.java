@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import kr.co.blockcom.board.biz.boardfree.service.BoardFreeService;
+import kr.co.blockcom.board.common.util.NullUtil;
+import kr.co.blockcom.board.common.util.ResultCodeUtil;
 import kr.co.blockcom.board.common.util.model.ResultVo;
 import kr.co.blockcom.board.common.util.model.ReturnStatusCode;
 import kr.co.blockcom.board.vo.board.BoardFree;
@@ -32,6 +34,8 @@ public class BoardController {
 	private static final Logger logger = LoggerFactory.getLogger(BoardController.class);
 	
 	private final BoardFreeService boardFreeService;
+	
+	private final ResultCodeUtil resultcodeutil;
 		
 	@GetMapping("/list")
 	public String freeBoardList() {
@@ -64,14 +68,14 @@ public class BoardController {
 		BoardFree vo=new BoardFree();
 		try {
 			vo = boardFreeService.selectPost(Integer.parseInt(seq));
-			if(vo==null) {
-				result.setReturnStatusCode(ReturnStatusCode.NO_POST);
+			if(vo == null) {
+				result = resultcodeutil.getResultInfo(ReturnStatusCode.NO_POST);
 			}else {
-				long post_view_time=0;
-				long current_time =System.currentTimeMillis();
+				long post_view_time = 0;
+				long current_time = System.currentTimeMillis();
 
 				if(session.getAttribute("post_view_time_"+seq)!=null) {
-					post_view_time=(long)session.getAttribute("post_view_time_"+seq);
+					post_view_time = (long)session.getAttribute("post_view_time_"+seq);
 				}
 				
 				session.setAttribute("post_view_time_"+seq, current_time);				
@@ -81,19 +85,20 @@ public class BoardController {
 				}
 				
 				vo = boardFreeService.selectPost(Integer.parseInt(seq));
-				result.setReturnStatusCode(ReturnStatusCode.SUCCESS);
+				
 				if("Y".equals(vo.getSecret_flag())) {
-					vo.setTitle("비밀글 입니다.");
+					vo.setTitle("[비밀글]"+vo.getTitle());
 					vo.setContent("비밀글입니다.");
 				}
-				result.setData(vo);
+				
+				result = resultcodeutil.getResultInfo(ReturnStatusCode.SUCCESS, vo);
 			}
 			
 		} catch (NumberFormatException e) {
-			result.setReturnStatusCode(ReturnStatusCode.INVALID_PAGE);
+			result = resultcodeutil.getResultInfo(ReturnStatusCode.INVALID_PAGE);
 			e.printStackTrace();
 		} catch (Exception e) {
-			result.setReturnStatusCode(ReturnStatusCode.FAIL);
+			result= resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
 			e.printStackTrace();
 		}
 		return new ResponseEntity<ResultVo<BoardFree>>(result,HttpStatus.OK);
@@ -107,25 +112,18 @@ public class BoardController {
 		logger.debug(vo.toString());
 		
 		try {
-			if(null==vo.getTitle() || "".equals(vo.getTitle())) {
-				result.setReturnStatusCode(ReturnStatusCode.NO_TITLE);
-			}else if(null==vo.getContent() || "".equals(vo.getContent())) {
-				result.setReturnStatusCode(ReturnStatusCode.NO_COTENT);
-			}else if(null==vo.getPassword() || "".equals(vo.getPassword())) {
-				result.setReturnStatusCode(ReturnStatusCode.NO_PASSWORD);
-			}else if(null==vo.getWriter() || "".equals(vo.getWriter())) {
-				result.setReturnStatusCode(ReturnStatusCode.NO_WRITER);
-			}else if(1==boardFreeService.insertPost(vo)){
-				result.setData(vo.getSeq());
-				result.setReturnStatusCode(ReturnStatusCode.SUCCESS);
+			if(NullUtil.isNullAll(vo, vo.getTitle(),vo.getContent(),vo.getPassword(),vo.getWriter(),vo.getCategory())){
+				logger.info("writeSubmit Parameter NULL");
+				result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
+			}else if(1==boardFreeService.insertPost(vo)) {
+				result = resultcodeutil.getResultInfo(ReturnStatusCode.SUCCESS,vo.getSeq());
 			}else {
-				result.setReturnStatusCode(ReturnStatusCode.FAIL);
+				result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			result.setReturnStatusCode(ReturnStatusCode.FAIL);
+			result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
 		}
-		
 		return new ResponseEntity<ResultVo<Integer>>(result , HttpStatus.OK);
 	}
 	
@@ -134,7 +132,7 @@ public class BoardController {
 	public ResponseEntity<List<BoardFree>> postList(@RequestBody BoardFree vo) {
 		List<BoardFree> resultVoList=new ArrayList<>();
 		try {
-			resultVoList = boardFreeService.selectPostList(vo);
+			resultVoList = boardFreeService.postListWithSecret(vo);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -152,22 +150,22 @@ public class BoardController {
 		try {
 			passwordVo=boardFreeService.selectPostPassword(vo.getSeq());
 			if(passwordVo==null) {
-				result.setReturnStatusCode(ReturnStatusCode.NO_POST);
+				result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
 			}else if(!passwordVo.getPassword().equals(vo.getPassword())){
-				result.setReturnStatusCode(ReturnStatusCode.WRONG_PASSWORD);
+				result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
 			}else if(passwordVo.getPassword().equals(vo.getPassword())) {
 				int updateResult=boardFreeService.updatePost(vo);
 				if(updateResult==1) {
-					result.setReturnStatusCode(ReturnStatusCode.SUCCESS);
+					result = resultcodeutil.getResultInfo(ReturnStatusCode.SUCCESS);
 				}else{
-					result.setReturnStatusCode(ReturnStatusCode.FAIL);
+					result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
 				}
 			}else{
-				result.setReturnStatusCode(ReturnStatusCode.FAIL);
+				result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			result.setReturnStatusCode(ReturnStatusCode.FAIL);
+			result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
 		}
 		return new ResponseEntity<ResultVo<Integer>>(result , HttpStatus.OK);
 	}
@@ -181,22 +179,22 @@ public class BoardController {
 		try {			
 			passwordVo = boardFreeService.selectPostPassword(Integer.parseInt(seq));
 			if(null == password || "".equals(password)) {
-				result.setReturnStatusCode(ReturnStatusCode.NO_PASSWORD);
+				result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
 			}else if(passwordVo.getPassword().equals(password)) {
 				int deleteResult=boardFreeService.deletePost(Integer.parseInt(seq));
 				if(1==deleteResult) {
-					result.setReturnStatusCode(ReturnStatusCode.SUCCESS);
+					result = resultcodeutil.getResultInfo(ReturnStatusCode.SUCCESS);
 				}else {
-					result.setReturnStatusCode(ReturnStatusCode.FAIL);
+					result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
 				}
 			}else {
-				result.setReturnStatusCode(ReturnStatusCode.WRONG_PASSWORD);
+				result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
 			}
 		} catch (NumberFormatException e) {
-			result.setReturnStatusCode(ReturnStatusCode.INVALID_PAGE);
+			result = resultcodeutil.getResultInfo(ReturnStatusCode.INVALID_PAGE);
 			e.printStackTrace();
 		} catch (Exception e) {
-			result.setReturnStatusCode(ReturnStatusCode.FAIL);
+			result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
 			e.printStackTrace();
 		}
 		return new ResponseEntity<ResultVo<Integer>>(result , HttpStatus.OK);
@@ -211,22 +209,44 @@ public class BoardController {
 		try {			
 			passwordVo = boardFreeService.selectPostPassword(Integer.parseInt(seq));
 			if(null == password || "".equals(password)) {
-				result.setReturnStatusCode(ReturnStatusCode.NO_PASSWORD);
+				result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
 			}else if(passwordVo.getPassword().equals(password)) {
 				returnVo=boardFreeService.selectPost(Integer.parseInt(seq));
-				result.setData(returnVo);
-				result.setReturnStatusCode(ReturnStatusCode.SUCCESS);
+				result = resultcodeutil.getResultInfo(ReturnStatusCode.SUCCESS,returnVo);
 			}else {
-				result.setReturnStatusCode(ReturnStatusCode.WRONG_PASSWORD);
+				result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
 			}
 		} catch (NumberFormatException e) {
-			result.setReturnStatusCode(ReturnStatusCode.INVALID_PAGE);
+			result = resultcodeutil.getResultInfo(ReturnStatusCode.INVALID_PAGE);
 			e.printStackTrace();
 		} catch (Exception e) {
-			result.setReturnStatusCode(ReturnStatusCode.FAIL);
+			result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
 			e.printStackTrace();
 		}
 		return new ResponseEntity<ResultVo<BoardFree>>(result , HttpStatus.OK);
+	}
+	
+	//댓글 등록
+	@PostMapping(value = {"/writeCommentSubmit"},consumes=MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ResultVo<Integer>> writeCommentSubmit(@RequestBody BoardFree vo){
+		ResultVo<Integer> result = new ResultVo<Integer>();
+		logger.info("## writeCommentSubmit ##");
+		logger.debug(vo.toString());
+		
+		try {
+			if(NullUtil.isNullAll(vo,vo.getContent(),vo.getPassword(),vo.getWriter(),vo.getParent_seq(),vo.getCategory())){
+				logger.info("writeCommentSubmit Parameter NULL");
+				result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
+			}else if(1==boardFreeService.insertComment(vo)) {
+				result = resultcodeutil.getResultInfo(ReturnStatusCode.SUCCESS,vo.getParent_seq());
+			}else {
+				result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
+		}
+		return new ResponseEntity<ResultVo<Integer>>(result , HttpStatus.OK);
 	}
 	
 	

@@ -119,11 +119,33 @@
 			delete_flag='N'
 	</update>
 
-	<update id="updateViewCount" parameterType="kr.co.blockcom.board.vo.board.BoardFree" >
+	<update id="updateViewCount" parameterType="kr.co.blockcom.board.vo.board.BoardFree">
 		UPDATE board_free
 		SET
 			view_count = view_count+1
 		WHERE
 			seq = #{seq}
 	</update>
+
+	<insert id="insertComment" parameterType="kr.co.blockcom.board.vo.board.BoardFree">
+	INSERT INTO board_free(
+            category
+			,parent_seq
+            ,writer
+            ,password
+            ,content
+            ,secret_flag            
+            ,reg_date
+            ,comment_flag
+        ) VALUES (
+            #{category}
+			,#{parent_seq}
+            ,#{writer}
+            ,#{password}
+            ,#{content}
+            ,#{secret_flag}
+            ,now()
+            ,'Y'
+        )
+	</insert>
 </mapper>
