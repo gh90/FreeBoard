@@ -49,7 +49,7 @@ public class BoardContorllerTest {
 		}
 	}
 	
-	@Test
+//	@Test
 	public void selectCommentTest() {
 		BoardFree vo =new BoardFree();
 		vo.setParent_seq(6);
@@ -62,4 +62,22 @@ public class BoardContorllerTest {
 			e.printStackTrace();
 		}
 	}
+	
+	@Test
+	public void updateCommentTest() {
+		BoardFree vo =new BoardFree();
+		vo.setSeq(70);
+		vo.setContent("으,허허허허");
+		
+		
+		
+		try {
+			System.out.println(boardFreeService.updateComment(vo));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
 }

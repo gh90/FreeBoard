@@ -294,15 +294,15 @@ function fn_select_commentList(){
 			if(data.length>0){
 			
 				for(var temp_list in data ){
-					commentList_html+="<div class='comment'>"
-					commentList_html+="<tr id='seq_"+ data[temp_list].seq +"'>";
+					commentList_html+="<tbody class='comment' data-cmtid="+data[temp_list].seq+">"
+					commentList_html+="<tr>";
 					commentList_html+="<td>"+data[temp_list].writer+"</td><td>등록 시간 : "+data[temp_list].reg_date+"</td>";
-					commentList_html+="<td colspan='2'><input type='button' data-type='modify' class='cmt_mod_hide' value='수정하기'><input type='button' data-type='delete' class='cmt_mod_hide' value='삭제하기'>"
-					commentList_html+="<div class='cmt_mod_show' style='display:none'><input type='password'><input type='button' value='확인'><input type='button' value='취소'></div></td>"
+					commentList_html+="<td colspan='2' style='text-align:right'><input type='button' data-type='modify' class='cmt_mod_hide cmt_del_hide' value='수정하기'><input type='button' data-type='delete' class='cmt_mod_hide cmt_del_hide' value='삭제하기'>"
+					commentList_html+="<div class='cmt_mod_show cmt_del_show' style='display:none'><input type='password'><input type='button' data-type='ok' data-detail='' value='확인'><input type='button' data-type='cancel' data-detail='' value='취소'></div></td>"
 					commentList_html+="</tr>"
 					commentList_html+="<tr class='cmt_mod_hide'><td colspan='5'>"+data[temp_list].content+"</td></tr>"
-					commentList_html+="<tr class='cmt_mod_show' style='display:none'><td colspan='5'><input type='text'></td></tr>"
-					commentList_html+="</div>"
+					commentList_html+="<tr class='cmt_mod_show' style='display:none'><td colspan='5'><input type='text' size='70'></td></tr>"
+					commentList_html+="</tbody>"
 				}
 				
 			}else{
@@ -328,11 +328,65 @@ function fn_boolean_check(check){
 
 function comment_mode(){
 	$("#comment_list").find(":input").on("click", function(){
-		console.log($(this).val);
+		var comment_obj=$(this).closest("tbody");
 		if($(this).data("type")=="modify"){
-			
+			comment_obj.find(".cmt_mod_show").show();
+			comment_obj.find(".cmt_mod_hide").hide();
+			comment_obj.children().eq(2).find(":input").val(comment_obj.children().eq(1).text());
+
+			comment_obj.find("[data-type='ok']").data("detail","modify");
+			comment_obj.find("[data-type='cancel']").data("detail","modify");			
 		}else if($(this).data("type")=="delete"){
-			console.log("삭제하기")
+			comment_obj.find(".cmt_del_show").show();
+			comment_obj.find(".cmt_del_hide").hide();
+
+			comment_obj.find("[data-type='ok']").data("detail","delete");
+			comment_obj.find("[data-type='cancel']").data("detail","delete");
+		}else if($(this).data("type")=="ok"){
+			fn_modify_comment(comment_obj);
+		}else if($(this).data("type")=="cancel"){
+			if($(this).data("detail")=="modify"){
+				comment_obj.find(".cmt_mod_show").hide();
+				comment_obj.find(".cmt_mod_hide").show();
+
+				comment_obj.find("[data-type='ok']").data("detail","");
+				comment_obj.find("[data-type='cancel']").data("detail","");	
+			}else if($(this).data("detail")=="delete"){
+				comment_obj.find(".cmt_del_show").hide();
+				comment_obj.find(".cmt_del_hide").show();
+
+				comment_obj.find("[data-type='ok']").data("detail","");
+				comment_obj.find("[data-type='cancel']").data("detail","");
+			}
 		}
 	})
+}
+
+function fn_modify_comment(comment_modify_obj){
+	var _cmo = comment_modify_obj
+	
+	var modify_comment_data = {
+			"seq" :_cmo.data("cmtid"),
+			"password" :_cmo.find(":input[type=password]").val(),
+			"content" : _cmo.find(":input[type=text]").val()
+		};
+	$.ajax({
+		type: 'post',
+		data: JSON.stringify(modify_comment_data), 
+		url: '/board/modifyCommentSubmit',
+		contentType:'application/json; charset=UTF-8',
+		success: function (data) {
+			if("0000"==data.code){
+				alert("글을 수정하였습니다.");
+				fn_select_commentList();
+			}else{
+				alert(data.message);
+			}
+		},
+		error: function (xhr, status, error) {
+			console.log(xhr);
+			console.log(status);
+			console.log(error);
+		}
+	});
 }

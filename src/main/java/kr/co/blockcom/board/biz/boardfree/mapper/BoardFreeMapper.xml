@@ -168,4 +168,17 @@
 		ORDER BY
 			seq ASC
 	</select>
+
+	<update id="updateComment" parameterType="kr.co.blockcom.board.vo.board.BoardFree">
+		UPDATE board_free
+		SET
+			content = #{content}
+			,secret_flag=#{secret_flag}
+		WHERE
+			seq=#{seq}
+		AND	
+			comment_flag='Y'
+		AND
+			delete_flag='N'
+	</update>
 </mapper>

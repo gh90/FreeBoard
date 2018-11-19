@@ -71,4 +71,13 @@ public interface BoardFreeMapper {
 	 * @return
 	 */
 	List<BoardFree> selectCommentList(BoardFree boardFree) throws Exception;
+	
+	 /**
+	 * 댓글 수정
+	 * @param param
+	 * @return
+	 */
+	int updateComment(BoardFree boardFree) throws Exception;
+	
+	
 }

@@ -249,6 +249,29 @@ public class BoardController {
 		return new ResponseEntity<ResultVo<Integer>>(result , HttpStatus.OK);
 	}
 	
+	//댓글 수정
+	@PostMapping(value = {"/modifyCommentSubmit"},consumes=MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ResultVo<Integer>> modifyCommentSubmit(@RequestBody BoardFree vo){
+		ResultVo<Integer> result = new ResultVo<Integer>();
+		logger.info("## modifyCommentSubmit ##");
+		logger.debug(vo.toString());
+		
+		try {
+			if(NullUtil.isNullAll(vo,vo.getContent(),vo.getPassword())){
+				logger.info("writeCommentSubmit Parameter NULL");
+				result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
+			}else if(1==boardFreeService.updateComment(vo)) {
+				result = resultcodeutil.getResultInfo(ReturnStatusCode.SUCCESS,vo.getParent_seq());
+			}else {
+				result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
+		}
+		return new ResponseEntity<ResultVo<Integer>>(result , HttpStatus.OK);
+	}
+	
 	@PostMapping("/commentList")
 	public ResponseEntity<List<BoardFree>> commentList(@RequestBody BoardFree vo) {
 		List<BoardFree> resultVoList=new ArrayList<>();
