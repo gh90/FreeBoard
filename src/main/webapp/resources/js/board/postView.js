@@ -1,6 +1,8 @@
 /**
  * 
  */
+
+
 $(document).ready(function(){
 	
 	$("#post_list").on("click",function(){
@@ -53,12 +55,12 @@ $(document).ready(function(){
 		}
 	});	
 	
-	
 })
 
 
 function init(post_id){
 	fn_post_view(post_id);
+	fn_select_commentList();
 }
 
 function fn_post_view(post_id){
@@ -260,7 +262,7 @@ function fn_comment_register(){
 		success: function (json) {
 			if("0000"==json.code){
 				alert("글이 등록되었습니다.");
-				location.href ="/board/postView?post_id="+json.data
+				fn_select_commentList();
 			}else{
 				alert(json.message);
 			}
@@ -273,7 +275,7 @@ function fn_comment_register(){
 }
 
 
-function fn_select_commnetList(){
+function fn_select_commentList(){
 	one_click="N"
 	var comment_list_data = {
 			"category" : "1"/*$("#category").val()*/
@@ -282,32 +284,34 @@ function fn_select_commnetList(){
 	
 	$.ajax({
 		type: 'post',
-		url: '/board/commnetList',
+		url: '/board/commentList',
 		data: JSON.stringify(comment_list_data),
 		dataType: "json",
 		contentType : 'application/json; charset=UTF-8',
 		success: function (data) {
-			var commenList_html="";
+			var commentList_html="";
+
+			if(data.length>0){
 			
-			for(var temp_list in data ){
-				commenList_html+="<tr>";
-				commenList_html+="<td>"+data[temp_list].writer+"</td><td>등록 시간 : "+data[temp_list].reg_date;
-				commenList_html+="<td><a href='/board/postView?post_id="+data[temp_list].seq+"'>";
-				commenList_html+=data[temp_list].title;
-				commenList_html+="</a></td>";
-				commenList_html+="<td>";
-				commenList_html+=data[temp_list].writer;
-				commenList_html+="</td>";
-				commenList_html+="<td>";
-				commenList_html+=data[temp_list].reg_date;
-				commenList_html+="</td>";
-				commenList_html+="<td>";
-				commenList_html+=data[temp_list].view_count;
-				commenList_html+="</td>";
-				commenList_html+="</tr>";
+				for(var temp_list in data ){
+					commentList_html+="<div class='comment'>"
+					commentList_html+="<tr id='seq_"+ data[temp_list].seq +"'>";
+					commentList_html+="<td>"+data[temp_list].writer+"</td><td>등록 시간 : "+data[temp_list].reg_date+"</td>";
+					commentList_html+="<td colspan='2'><input type='button' data-type='modify' class='cmt_mod_hide' value='수정하기'><input type='button' data-type='delete' class='cmt_mod_hide' value='삭제하기'>"
+					commentList_html+="<div class='cmt_mod_show' style='display:none'><input type='password'><input type='button' value='확인'><input type='button' value='취소'></div></td>"
+					commentList_html+="</tr>"
+					commentList_html+="<tr class='cmt_mod_hide'><td colspan='5'>"+data[temp_list].content+"</td></tr>"
+					commentList_html+="<tr class='cmt_mod_show' style='display:none'><td colspan='5'><input type='text'></td></tr>"
+					commentList_html+="</div>"
+				}
 				
+			}else{
+				commentList_html+="<tr style='text-align:center;'>";
+				commentList_html+="<td colspan='3'>댓글이 없습니다.</td>";
+				commentList_html+="</tr>";
 			}
-			$("#postList").html(commenList_html);
+			$("#comment_list").html(commentList_html);
+			comment_mode();
 			
 		},
 		error: function (xhr, status, error) {
@@ -320,4 +324,15 @@ function fn_select_commnetList(){
 
 function fn_boolean_check(check){
 	return check==true?"Y":"N";
+}
+
+function comment_mode(){
+	$("#comment_list").find(":input").on("click", function(){
+		console.log($(this).val);
+		if($(this).data("type")=="modify"){
+			
+		}else if($(this).data("type")=="delete"){
+			console.log("삭제하기")
+		}
+	})
 }

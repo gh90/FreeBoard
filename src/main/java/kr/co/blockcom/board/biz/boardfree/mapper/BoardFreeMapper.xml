@@ -153,6 +153,7 @@
 		SELECT
 		       seq
 		       ,writer
+			   ,content
 				,mod_date
 		       ,reg_date
 		       ,secret_flag
@@ -165,6 +166,6 @@
 		AND
 			delete_flag='N'
 		ORDER BY
-			seq DESC
+			seq ASC
 	</select>
 </mapper>

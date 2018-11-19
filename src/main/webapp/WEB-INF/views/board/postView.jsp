@@ -48,15 +48,15 @@
     </table>
     <h2  align="center">댓글영역</h2>
     <table id="comment_list" style="text-align: left;width:700px;margin: auto;" border="2" bordercolor="black">
-    	<!-- <tr style="text-align: center;">
+    	<tr style="text-align: center;">
 			<td colspan="3">댓글이 없습니다.</td>
-		</tr> -->
-			<tr>
+		</tr>
+			<!-- <tr>
 				<td>hole</td><td>등록시간 : </td><td colspan="2"><input type="button" value="수정하기"><input type="button" value="삭제하기"></td> 
 			</tr>
 			<tr>
 				<td colspan="5">내일은 월요일</td>
-			</tr>
+			</tr> -->
     </table>    
 	<table style="text-align: left;width:700px;margin: auto;" border="2" bordercolor="black">
 		<tr>
