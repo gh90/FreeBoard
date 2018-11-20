@@ -1,6 +1,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-
+	<style>
+	.ck-editor__editable {
+	    min-height: 400px;
+	}
+	</style>
 	<h2 id="board_type" align="center">게시판 글보기</h2>
 	
     <table style="text-align: center;width:700px;margin: auto;" border="2" bordercolor="black">
@@ -73,3 +77,5 @@ $(document).ready(function(){
 })
 </script>
 <script src="/resources/js/board/postView.js" defer="defer"></script>
+<script src="/resources/js/ckeditor/ckeditor.js" defer="defer"></script>
+<script src="/resources/js/ckeditor/translations/ko.js" defer="defer"></script>

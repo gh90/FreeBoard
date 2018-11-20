@@ -2,9 +2,19 @@
  * 
  */
 
+let content_modify
 
 $(document).ready(function(){
-	
+
+	ClassicEditor
+			.create( document.querySelector( '#content_modify' ),{
+				language:'ko'
+			} )
+			.then(newEditor => {
+				content_modify=newEditor;
+			}).catch( error => {
+				console.error( error );
+			});	
 	$("#post_list").on("click",function(){
 		location.href="/board/list";
 	});
@@ -134,7 +144,8 @@ function fn_modify_mode(){
 	$(".modify_hide").hide();
 	$(".modify_show").show();
 	$("#title_modify").val($("#title").text());
-	$("#content_modify").val($("#content").text())
+	content_modify.setData($("#content").text());
+	// $("#content_modify").val($("#content").text())
 	$("#password").val("");
 	
 }
@@ -150,7 +161,7 @@ function fn_post_modify(){
 			"seq" :post_id,
 			"password" :$("#password").val(),
 			"title": $("#title_modify").val(),
-			"content" : $("#content_modify").val()
+			"content" : content_modify.getData()
 		};
 	$.ajax({
 		type: 'post',

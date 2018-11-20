@@ -147,7 +147,7 @@ public class BoardController {
 		logger.info("## modifySubmit ##");
 		try {
 			passwordVo=boardFreeService.selectPostPassword(vo.getSeq());
-			if(passwordVo==null) {
+			if(NullUtil.isNullAll(vo,vo.getSeq(),vo.getContent(),vo.getPassword())) {
 				result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
 			}else if(!passwordVo.getPassword().equals(vo.getPassword())){
 				result = resultcodeutil.getResultInfo(ReturnStatusCode.WRONG_PASSWORD);
