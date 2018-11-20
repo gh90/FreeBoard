@@ -4,23 +4,22 @@
 let content;
 $(document).ready(function(){	
 	ClassicEditor
-			.create( document.querySelector( '#content' ) )
+			.create( document.querySelector( '#content' ),{
+				language:'ko'
+			} )
 			.then(newEditor => {
 				content=newEditor;
 			}).catch( error => {
 				console.error( error );
-			} );
+			});
 })
 
-
-
-
-var one_click="Y";
-
 $("#submit").on("click",function(){
-	if(one_click=="Y"){
-		fn_post_register()
-	}
+	if(confirm("정말 등록하시겠습니까?")){
+			fn_post_register()
+		}else{
+			return false;
+		}
 })
 
 $("#post_list").on("click",function(){
@@ -28,7 +27,6 @@ $("#post_list").on("click",function(){
 })
 
 function fn_post_register(){
-	one_click="N"
 	var register_data = {
 			"category" : $("#category").val(),
 			"writer" : $("#writer").val(),
@@ -58,7 +56,6 @@ function fn_post_register(){
 			alert("글 등록 실패")
 		}
 	});
-	one_click="Y"
 }
 
 function fn_boolean_check(check){

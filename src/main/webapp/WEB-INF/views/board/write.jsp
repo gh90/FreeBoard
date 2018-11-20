@@ -1,5 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-
+	<style>
+	.ck-editor__editable {
+	    min-height: 400px;
+	}
+	</style>
 		<h2>게시판 글쓰기 이야야양</h2>
 		
 	    <table width="700" border="3" bordercolor="lightgray" align="center">
@@ -32,8 +36,8 @@
 	        </tr>
 	        <tr>
 	            <td>내 용</td>
-	            <td  colspan="4">
-	                <textarea id="content" cols="72" rows="20"></textarea>            
+	            <td  colspan="4" >
+	                <textarea id="content" style="display:none;"></textarea>            
 	            </td>        
 	        </tr>
 	        <tr>
@@ -60,3 +64,4 @@
 	    
 <script src="/resources/js/board/write.js" defer="defer"></script>
 <script src="/resources/js/ckeditor/ckeditor.js" defer="defer"></script>
+<script src="/resources/js/ckeditor/translations/ko.js" defer="defer"></script>
