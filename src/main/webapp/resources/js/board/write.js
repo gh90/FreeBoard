@@ -1,6 +1,19 @@
 /**
  * 
  */
+let content;
+$(document).ready(function(){	
+	ClassicEditor
+			.create( document.querySelector( '#content' ) )
+			.then(newEditor => {
+				content=newEditor;
+			}).catch( error => {
+				console.error( error );
+			} );
+})
+
+
+
 
 var one_click="Y";
 
@@ -21,7 +34,7 @@ function fn_post_register(){
 			"writer" : $("#writer").val(),
 			"password" : $("#password").val(),
 			"title" : $("#title").val(),
-			"content" : $("#content").val(),
+			"content" : content.getData(),
 			"notice_flag" : fn_boolean_check($("#notice_flag").prop("checked")),
 			"secret_flag" : fn_boolean_check($("#secret_flag").prop("checked"))
 		};

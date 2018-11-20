@@ -109,7 +109,6 @@ public class BoardController {
 	public ResponseEntity<ResultVo<Integer>> writeSubmit(@RequestBody BoardFree vo){
 		ResultVo<Integer> result = new ResultVo<Integer>();
 		logger.info("## writeSubmit ##");
-		logger.debug(vo.toString());
 		
 		try {
 			if(NullUtil.isNullAll(vo, vo.getTitle(),vo.getContent(),vo.getPassword(),vo.getWriter(),vo.getCategory())){
@@ -146,13 +145,12 @@ public class BoardController {
 		ResultVo<Integer> result = new ResultVo<Integer>();
 		BoardFree passwordVo =new BoardFree();
 		logger.info("## modifySubmit ##");
-		logger.debug(vo.toString());
 		try {
 			passwordVo=boardFreeService.selectPostPassword(vo.getSeq());
 			if(passwordVo==null) {
 				result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
 			}else if(!passwordVo.getPassword().equals(vo.getPassword())){
-				result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
+				result = resultcodeutil.getResultInfo(ReturnStatusCode.WRONG_PASSWORD);
 			}else if(passwordVo.getPassword().equals(vo.getPassword())) {
 				int updateResult=boardFreeService.updatePost(vo);
 				if(updateResult==1) {
@@ -185,7 +183,7 @@ public class BoardController {
 				if(1==deleteResult) {
 					result = resultcodeutil.getResultInfo(ReturnStatusCode.SUCCESS);
 				}else {
-					result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
+					result = resultcodeutil.getResultInfo(ReturnStatusCode.WRONG_PASSWORD);
 				}
 			}else {
 				result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
@@ -213,6 +211,8 @@ public class BoardController {
 			}else if(passwordVo.getPassword().equals(password)) {
 				returnVo=boardFreeService.selectPost(Integer.parseInt(seq));
 				result = resultcodeutil.getResultInfo(ReturnStatusCode.SUCCESS,returnVo);
+			}else if(!passwordVo.getPassword().equals(password)) {
+				result = resultcodeutil.getResultInfo(ReturnStatusCode.WRONG_PASSWORD);
 			}else {
 				result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
 			}
@@ -231,7 +231,6 @@ public class BoardController {
 	public ResponseEntity<ResultVo<Integer>> writeCommentSubmit(@RequestBody BoardFree vo){
 		ResultVo<Integer> result = new ResultVo<Integer>();
 		logger.info("## writeCommentSubmit ##");
-		logger.debug(vo.toString());
 		
 		try {
 			if(NullUtil.isNullAll(vo,vo.getContent(),vo.getPassword(),vo.getWriter(),vo.getParent_seq(),vo.getCategory())){
@@ -253,16 +252,54 @@ public class BoardController {
 	@PostMapping(value = {"/modifyCommentSubmit"},consumes=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ResultVo<Integer>> modifyCommentSubmit(@RequestBody BoardFree vo){
 		ResultVo<Integer> result = new ResultVo<Integer>();
+		BoardFree passwordVo =new BoardFree();
 		logger.info("## modifyCommentSubmit ##");
-		logger.debug(vo.toString());
 		
 		try {
-			if(NullUtil.isNullAll(vo,vo.getContent(),vo.getPassword())){
-				logger.info("writeCommentSubmit Parameter NULL");
+			passwordVo = boardFreeService.selectCommentPassword(vo.getSeq());
+			if(NullUtil.isNullAll(vo,vo.getSeq(),vo.getContent(),vo.getPassword())){
+				logger.info("modifyCommentSubmit Parameter NULL");
 				result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
-			}else if(1==boardFreeService.updateComment(vo)) {
-				result = resultcodeutil.getResultInfo(ReturnStatusCode.SUCCESS,vo.getParent_seq());
-			}else {
+			}else if(vo.getPassword().equals(passwordVo.getPassword())){
+				if(1==boardFreeService.updateComment(vo)) {
+					result = resultcodeutil.getResultInfo(ReturnStatusCode.SUCCESS,vo.getParent_seq());
+				}else {
+					result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
+				}
+			}else if(!vo.getPassword().equals(passwordVo.getPassword())){
+				result = resultcodeutil.getResultInfo(ReturnStatusCode.WRONG_PASSWORD);
+			}else{
+				result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
+		}
+		return new ResponseEntity<ResultVo<Integer>>(result , HttpStatus.OK);
+	}
+	
+	//댓글 삭제
+	
+	@PostMapping(value = {"/deleteCommentSubmit"},consumes=MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ResultVo<Integer>> deleteCommentSubmit(@RequestBody BoardFree vo){
+		ResultVo<Integer> result = new ResultVo<Integer>();
+		BoardFree passwordVo =new BoardFree();
+		logger.info("## deleteCommentSubmit ##");
+		
+		try {
+			passwordVo = boardFreeService.selectCommentPassword(vo.getSeq());
+			if(NullUtil.isNullAll(vo,vo.getSeq(),vo.getPassword())){
+				logger.info("deleteCommentSubmit Parameter NULL");
+				result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
+			}else if(vo.getPassword().equals(passwordVo.getPassword())){
+				if(1==boardFreeService.deleteComment(vo.getSeq())) {
+					result = resultcodeutil.getResultInfo(ReturnStatusCode.SUCCESS,vo.getParent_seq());
+				}else {
+					result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
+				}
+			}else if(!vo.getPassword().equals(passwordVo.getPassword())){
+				result = resultcodeutil.getResultInfo(ReturnStatusCode.WRONG_PASSWORD);
+			}else{
 				result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
 			}
 		} catch (Exception e) {

@@ -75,7 +75,7 @@ function fn_post_view(post_id){
 				$("#title").text(json.data.title);
 				$("#writer").text(json.data.writer);
 				$("#reg_date").text(json.data.reg_date);
-				$("#content").text(json.data.content);
+				$("#content").html(json.data.content);
 				$("#view_count").text(json.data.view_count);
 				
 				if("Y"==json.data.secret_flag){
@@ -343,7 +343,11 @@ function comment_mode(){
 			comment_obj.find("[data-type='ok']").data("detail","delete");
 			comment_obj.find("[data-type='cancel']").data("detail","delete");
 		}else if($(this).data("type")=="ok"){
-			fn_modify_comment(comment_obj);
+			if($(this).data("detail")=="modify"){
+				fn_modify_comment(comment_obj);
+			}else if($(this).data("detail")=="delete"){
+				fn_delete_comment(comment_obj);
+			}
 		}else if($(this).data("type")=="cancel"){
 			if($(this).data("detail")=="modify"){
 				comment_obj.find(".cmt_mod_show").hide();
@@ -378,6 +382,34 @@ function fn_modify_comment(comment_modify_obj){
 		success: function (data) {
 			if("0000"==data.code){
 				alert("글을 수정하였습니다.");
+				fn_select_commentList();
+			}else{
+				alert(data.message);
+			}
+		},
+		error: function (xhr, status, error) {
+			console.log(xhr);
+			console.log(status);
+			console.log(error);
+		}
+	});
+}
+
+function fn_delete_comment(comment_delete_obj){
+	var _cdo = comment_delete_obj
+	
+	var delete_comment_data = {
+			"seq" :_cdo.data("cmtid"),
+			"password" :_cdo.find(":input[type=password]").val()
+		};
+	$.ajax({
+		type: 'post',
+		data: JSON.stringify(delete_comment_data), 
+		url: '/board/deleteCommentSubmit',
+		contentType:'application/json; charset=UTF-8',
+		success: function (data) {
+			if("0000"==data.code){
+				alert("댓글을 삭제하였습니다.");
 				fn_select_commentList();
 			}else{
 				alert(data.message);

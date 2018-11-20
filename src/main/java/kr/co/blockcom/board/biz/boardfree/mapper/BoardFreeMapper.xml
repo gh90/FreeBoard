@@ -58,9 +58,10 @@
 	       delete_flag='N'
     </select>
     
-    <select id="selectPostPassword" parameterType="int" resultType="kr.co.blockcom.board.vo.board.BoardFree">
+    <select id="selectPassword" parameterType="int" resultType="kr.co.blockcom.board.vo.board.BoardFree">
 	    SELECT
 	       seq
+		   ,comment_flag
 	       ,password
 	    FROM
 	       board_free
@@ -68,8 +69,6 @@
 	       seq=#{seq}
 	    AND	    
 	       delete_flag='N'
-		AND
-	       comment_flag='N'
     </select>
 
     <insert id="insertPost" parameterType="kr.co.blockcom.board.vo.board.BoardFree" useGeneratedKeys="true" keyProperty="seq">
@@ -109,7 +108,7 @@
 			password = #{password}
 	</update>
 
-	<update id="deletePost" parameterType="int">
+	<update id="deletePost" parameterType="kr.co.blockcom.board.vo.board.BoardFree">
 		UPDATE board_free
 		SET
 			delete_flag='Y'
@@ -173,7 +172,22 @@
 		UPDATE board_free
 		SET
 			content = #{content}
-			,secret_flag=#{secret_flag}
+			,secret_flag = #{secret_flag}
+			,mod_date = now()
+		WHERE
+			seq=#{seq}
+		AND	
+			comment_flag='Y'
+		AND
+			delete_flag='N'
+		AND
+			password = #{password}
+	</update>
+
+	<update id="deleteComment" parameterType="kr.co.blockcom.board.vo.board.BoardFree">
+		UPDATE board_free
+		SET
+			delete_flag = 'Y'
 		WHERE
 			seq=#{seq}
 		AND	

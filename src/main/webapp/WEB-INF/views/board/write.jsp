@@ -59,3 +59,4 @@
 
 	    
 <script src="/resources/js/board/write.js" defer="defer"></script>
+<script src="/resources/js/ckeditor/ckeditor.js" defer="defer"></script>

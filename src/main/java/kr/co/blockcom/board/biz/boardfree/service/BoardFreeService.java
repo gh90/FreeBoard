@@ -25,7 +25,24 @@ public class BoardFreeService {
 	
 	public BoardFree selectPostPassword(int seq) throws Exception{
 		logger.info("selectPassword : {}", seq);
-		return boardFreeMapper.selectPostPassword(seq);
+		BoardFree vo = new BoardFree();
+		vo = boardFreeMapper.selectPassword(seq);
+		if("N".equals(vo.getComment_flag())) {
+			return vo;
+		}else {
+			return null;
+		}
+	}
+	
+	public BoardFree selectCommentPassword(int seq) throws Exception{
+		logger.info("selectPassword : {}", seq);
+		BoardFree vo = new BoardFree();
+		vo = boardFreeMapper.selectPassword(seq);
+		if("Y".equals(vo.getComment_flag())) {
+			return vo;
+		}else {
+			return null;
+		}
 	}
 	
 	public int insertPost(BoardFree boardFree) throws Exception{
@@ -84,5 +101,11 @@ public class BoardFreeService {
 		logger.info("updateComment : {}", boardFree);
 		return boardFreeMapper.updateComment(boardFree);
 	}
+	
+	public int deleteComment(int seq) throws Exception{
+		logger.info("deleteComment : {}", seq);
+		return boardFreeMapper.deleteComment(seq);
+	}
+	
 
 }
