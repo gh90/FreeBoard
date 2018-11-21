@@ -8,11 +8,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import kr.co.blockcom.board.biz.boardfree.service.BoardFreeService;
-import kr.co.blockcom.board.common.util.PageUtil;
 import kr.co.blockcom.board.config.BtradeBoardWasSpringConfig;
 import kr.co.blockcom.board.config.DataSourceConfig;
 import kr.co.blockcom.board.vo.board.BoardFree;
-import kr.co.blockcom.board.vo.board.PageVo;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes={DataSourceConfig.class, BtradeBoardWasSpringConfig.class})
@@ -82,14 +80,13 @@ public class BoardContorllerTest {
 	}
 //	@Test
 	public void selectPostListTest(){
-		PageVo vo =new PageVo();
-		PageUtil pageUtil = new PageUtil();
+		BoardFree vo =new BoardFree();
 		vo.setCategory(1);
 		vo.setNowPage(1);
 		vo.setPagingSize(10);
 		vo.setBlockSize(10);
 		vo.setTotalPost(61);
-		pageUtil.setPaging(vo);
+//		PageUtil.setPaging(vo);
 		try {
 			System.out.println(boardFreeService.postListWithSecret(vo));
 		} catch (Exception e) {
@@ -100,7 +97,7 @@ public class BoardContorllerTest {
 	}
 	@Test
 	public void selectPostListCountTest() {
-		PageVo vo =new PageVo();
+		BoardFree vo =new BoardFree();
 		try {
 			System.out.println(boardFreeService.selectPostListCount(vo));
 			vo.toString();

@@ -5,9 +5,6 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
-//import kr.co.blockcom.btradewebapi.exception.model.BtradeException;
-//import kr.co.blockcom.btradewebapi.vo.error.BtradeError;
-
 public final class NullUtil {
 	private NullUtil() {
 		// don't use!
@@ -141,36 +138,4 @@ public final class NullUtil {
 	public static <T> T replaceIfNull(T value, T replacement) {
 		return isNull(value) ? replacement : value;
 	}
-	
-	/**
-	 * 입력값이 널일 경우 errorCode에 해당하는 익셉션을 발생시킵니다.
-	 * @param value
-	 * @param errorCode
-	 * @return
-	 * @throws Exception
-	 */
-//	public static boolean throwExceptionIfNull(Object value, BtradeError errorCode, HttpStatus httpStatus) throws Exception{
-//		if(isNull(value)) throw new BtradeException(errorCode, httpStatus);
-//		return false;
-//	}
-	/**
-	 * 입력값이 널일 경우 errorCode에 해당하는 익셉션을 발생시킵니다.
-	 * HttpStatus 값을 생략할 경우 HttpStatus.BAD_REQUEST가 기본 설정됩니다.
-	 * @param value
-	 * @param errorCode
-	 * @return
-	 * @throws Exception
-	 */
-//	public static boolean throwExceptionIfNull(Object value, BtradeError errorCode) throws Exception{
-//		if(isNull(value)) throw new BtradeException(errorCode, HttpStatus.BAD_REQUEST);
-//		return false;
-//	}
-//	public static boolean throwExceptionIfNullMberSeq(Object value, BtradeError errorCode) throws Exception{
-//		if(isNullMberSeq(value)) throw new BtradeException(errorCode, HttpStatus.BAD_REQUEST);
-//		return false;
-//	}
-//	public static boolean throwExceptionIfNullByInt(Object value, BtradeError errorCode) throws Exception{
-//		if(isNullByInt(value)) throw new BtradeException(errorCode, HttpStatus.BAD_REQUEST);
-//		return false;
-//	}
 }

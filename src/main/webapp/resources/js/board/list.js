@@ -12,9 +12,6 @@ $(document).ready(function(){
 	fn_select_postList(1);
 })
 
-var one_click="Y";
-
-
 function fn_select_postList(now_page){
 	one_click="N"
 	var post_list_data = {
@@ -54,8 +51,14 @@ function fn_select_postList(now_page){
 				
 			}
 			$("#postList").html(postList_html);
-			postPaging_html+="<span class='page_move' data-page=1><<</span> &nbsp;&nbsp;"
-			postPaging_html+="<span class='page_move' data-page="+(page_vo.nowPage*1-page_vo.blockSize*1)+"><</span> &nbsp;&nbsp;"
+			if(page_vo.nowPage==1){
+				postPaging_html+="<span><<</span> &nbsp;&nbsp;"
+				postPaging_html+="<span><</span> &nbsp;&nbsp;"
+			}else{
+				postPaging_html+="<span class='page_move' data-page=1><<</span> &nbsp;&nbsp;"
+				postPaging_html+="<span class='page_move' data-page="+(page_vo.nowPage*1-page_vo.blockSize*1)+"><</span> &nbsp;&nbsp;"
+			}
+
 			for(var i=page_vo.startPage;i<=page_vo.endPage;i++){
 				if(page_vo.nowPage==i){
 					postPaging_html+="<span style='font-weight:bold;'>"+i+"</span> &nbsp;&nbsp;"
@@ -64,8 +67,14 @@ function fn_select_postList(now_page){
 				}
 
 			}
-			postPaging_html+="<span class='page_move' data-page="+(page_vo.nowPage*1+page_vo.blockSize*1)+">></span> &nbsp;&nbsp;"
-			postPaging_html+="<span class='page_move' data-page="+page_vo.totalPage+">>></span> &nbsp;&nbsp;"
+			if(page_vo.nowPage==page_vo.totalPage){
+				postPaging_html+="<span>></span> &nbsp;&nbsp;"
+				postPaging_html+="<span>>></span> &nbsp;&nbsp;"
+			}else{
+				postPaging_html+="<span class='page_move' data-page="+(page_vo.nowPage*1+page_vo.blockSize*1)+">></span> &nbsp;&nbsp;"
+				postPaging_html+="<span class='page_move' data-page="+page_vo.totalPage+">>></span> &nbsp;&nbsp;"
+			}
+
 			$("#post_page").html(postPaging_html);
 			$(".page_move").hover(function (){console.log("aaaaa");$(this).css("cursor","pointer")},function (){$(this).css("cursor","")})
 			fn_page_click()
@@ -74,8 +83,6 @@ function fn_select_postList(now_page){
 			console.log("실패");
 		}
 	});
-	
-	one_click="Y"
 }
 
 function fn_page_click(){

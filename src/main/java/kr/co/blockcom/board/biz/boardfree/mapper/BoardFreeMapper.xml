@@ -16,7 +16,7 @@
 	       
 	       
 	       
-	<select id="selectPostList" parameterType="kr.co.blockcom.board.vo.board.PageVo" resultType="kr.co.blockcom.board.vo.board.BoardFree">
+	<select id="selectPostList" parameterType="kr.co.blockcom.board.vo.board.BoardFree" resultType="kr.co.blockcom.board.vo.board.BoardFree">
 		SELECT
 		       seq
 		       ,writer
@@ -37,7 +37,7 @@
 		limit #{startPost},#{pagingSize}
 	</select>
 
-	<select id="selectPostListCount" parameterType="kr.co.blockcom.board.vo.board.BoardFree" resultType="kr.co.blockcom.board.vo.board.PageVo">
+	<select id="selectPostListCount" parameterType="kr.co.blockcom.board.vo.board.BoardFree" resultType="kr.co.blockcom.board.vo.board.BoardFree">
 		SELECT
 			count(*) AS totalPost
 	    FROM

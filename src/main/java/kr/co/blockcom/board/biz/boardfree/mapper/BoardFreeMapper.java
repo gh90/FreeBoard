@@ -59,6 +59,13 @@ public interface BoardFreeMapper {
 	 List<BoardFree> selectPostList(BoardFree boardFree) throws Exception;
 	 
 	 /**
+	 * 글 목록조회
+	 * @param BoardFree
+	 * @return
+	 */
+	 BoardFree selectPostListCount(BoardFree boardFree) throws Exception;
+	 
+	 /**
 	 * 댓글 등록 
 	 * @param BoardFree
 	 * @return

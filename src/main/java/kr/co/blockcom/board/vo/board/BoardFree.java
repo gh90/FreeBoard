@@ -3,10 +3,11 @@ package kr.co.blockcom.board.vo.board;
 import java.io.Serializable;
 import java.util.Date;
 
+import kr.co.blockcom.board.common.util.model.PageVo;
 import lombok.Data;
 
 @Data
-public class BoardFree implements Serializable {
+public class BoardFree extends PageVo implements Serializable{
 	/**
 	 * 
 	 */
