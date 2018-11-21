@@ -16,7 +16,7 @@
 	       
 	       
 	       
-	<select id="selectPostList" parameterType="kr.co.blockcom.board.vo.board.BoardFree" resultType="kr.co.blockcom.board.vo.board.BoardFree">
+	<select id="selectPostList" parameterType="kr.co.blockcom.board.vo.board.PageVo" resultType="kr.co.blockcom.board.vo.board.BoardFree">
 		SELECT
 		       seq
 		       ,writer
@@ -35,6 +35,21 @@
 		ORDER BY
 			seq DESC
 		limit #{startPost},#{pagingSize}
+	</select>
+
+	<select id="selectPostListCount" parameterType="kr.co.blockcom.board.vo.board.BoardFree" resultType="kr.co.blockcom.board.vo.board.PageVo">
+		SELECT
+			count(*) AS totalPost
+	    FROM
+			board_free
+	    WHERE
+			comment_flag='N'
+		AND
+			delete_flag='N'
+		AND
+			notice_flag='N'
+		ORDER BY
+			seq DESC
 	</select>
 	
     <select id="selectPost" parameterType="int" resultType="kr.co.blockcom.board.vo.board.BoardFree">

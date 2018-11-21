@@ -45,6 +45,9 @@
 					</tr>
 				</tbody>
 			</table>
+			<div id="post_page" style="text-align: center">
+				<span style="font-weight: bold;">1</span> <span>2</span>
+			</div>
 		</div>
 		<!-- //table -->
 <script src="/resources/js/board/list.js" defer="defer"></script>

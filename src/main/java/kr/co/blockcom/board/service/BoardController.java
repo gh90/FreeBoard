@@ -23,11 +23,11 @@ import kr.co.blockcom.board.biz.boardfree.service.BoardFreeService;
 import kr.co.blockcom.board.common.util.NullUtil;
 import kr.co.blockcom.board.common.util.PageUtil;
 import kr.co.blockcom.board.common.util.ResultCodeUtil;
-import kr.co.blockcom.board.common.util.model.PageVo;
 import kr.co.blockcom.board.common.util.model.ResultVo;
 import kr.co.blockcom.board.common.util.model.ReturnStatusCode;
 import kr.co.blockcom.board.common.util.model.pageListVo;
 import kr.co.blockcom.board.vo.board.BoardFree;
+import kr.co.blockcom.board.vo.board.PageVo;
 import lombok.AllArgsConstructor;
 
 @Controller
@@ -137,8 +137,9 @@ public class BoardController {
 		ResultVo<pageListVo<BoardFree>> result = new ResultVo<pageListVo<BoardFree>>();
 		pageListVo<BoardFree> pageResult = new pageListVo<BoardFree>();
 		try {
-			pageResult.setData(boardFreeService.postListWithSecret(vo)); ;
+			vo.setTotalPost(boardFreeService.selectPostListCount(vo).getTotalPost());
 			pageResult.setPageVo(pageUtil.setPaging(vo));
+			pageResult.setData(boardFreeService.postListWithSecret(vo)); ;
 			result = resultcodeutil.getResultInfo(ReturnStatusCode.SUCCESS,pageResult);
 		} catch (Exception e) {
 			result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);

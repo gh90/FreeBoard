@@ -1,7 +1,10 @@
 package kr.co.blockcom.board.common.util;
 
-import kr.co.blockcom.board.common.util.model.PageVo;
+import org.springframework.stereotype.Component;
 
+import kr.co.blockcom.board.vo.board.PageVo;
+
+@Component
 public final class PageUtil {
 	
 	
@@ -21,8 +24,18 @@ public final class PageUtil {
 		if(pageVo.getBlockSize()<1) {
 			pageVo.setBlockSize(10);
 		}
-		//전체 페이지 갯수
+		if(pageVo.getPagingSize()<1) {
+			pageVo.setPagingSize(10);
+		}
+		if(pageVo.getNowPage()<1) {
+			pageVo.setNowPage(1);
+		}
 		pageVo.setTotalPage((int)(pageVo.getTotalPost()/pageVo.getPagingSize())+1);
+		
+		if(pageVo.getNowPage()>pageVo.getTotalPage() ) {
+			pageVo.setNowPage(pageVo.getTotalPage());
+		}
+		//전체 페이지 갯수
 		//해당 페이지의 시작게시물 limit 용
 		pageVo.setStartPost(pageVo.getPagingSize()*(pageVo.getNowPage()-1));
 		//해당 페이지가 속한 블록

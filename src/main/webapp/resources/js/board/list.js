@@ -7,16 +7,19 @@ $(document).ready(function(){
 		location.href="/board/write";
 	})
 	
-	fn_select_postList();
+	
+
+	fn_select_postList(1);
 })
 
 var one_click="Y";
 
 
-function fn_select_postList(){
+function fn_select_postList(now_page){
 	one_click="N"
 	var post_list_data = {
-			"category" : "1"/*$("#category").val()*/
+			"category" : "1"/*$("#category").val()*/,
+			"nowPage" : now_page
 		};
 	
 	
@@ -28,8 +31,10 @@ function fn_select_postList(){
 		contentType : 'application/json; charset=UTF-8',
 		success: function (data) {
 			var postList_html="";
-			var post_list = data.data;
-			
+			var postPaging_html="";
+			var post_list = data.data.data;
+			var page_vo = data.data.pageVo
+			console.log(page_vo);
 			for(var post_element in post_list ){
 				postList_html+="<tr>";
 				postList_html+="<td>"+post_list[post_element].seq+"</td>";
@@ -49,7 +54,21 @@ function fn_select_postList(){
 				
 			}
 			$("#postList").html(postList_html);
-			
+			postPaging_html+="<span class='page_move' data-page=1><<</span> &nbsp;&nbsp;"
+			postPaging_html+="<span class='page_move' data-page="+(page_vo.nowPage*1-page_vo.blockSize*1)+"><</span> &nbsp;&nbsp;"
+			for(var i=page_vo.startPage;i<=page_vo.endPage;i++){
+				if(page_vo.nowPage==i){
+					postPaging_html+="<span style='font-weight:bold;'>"+i+"</span> &nbsp;&nbsp;"
+				}else{
+					postPaging_html+="<span class='page_move' data-page="+i+">"+i+"</span> &nbsp;&nbsp;"
+				}
+
+			}
+			postPaging_html+="<span class='page_move' data-page="+(page_vo.nowPage*1+page_vo.blockSize*1)+">></span> &nbsp;&nbsp;"
+			postPaging_html+="<span class='page_move' data-page="+page_vo.totalPage+">>></span> &nbsp;&nbsp;"
+			$("#post_page").html(postPaging_html);
+			$(".page_move").hover(function (){console.log("aaaaa");$(this).css("cursor","pointer")},function (){$(this).css("cursor","")})
+			fn_page_click()
 		},
 		error: function (xhr, status, error) {
 			console.log("실패");
@@ -57,4 +76,10 @@ function fn_select_postList(){
 	});
 	
 	one_click="Y"
+}
+
+function fn_page_click(){
+	$(".page_move").on("click",function(){
+		fn_select_postList($(this).data("page"));
+	})
 }

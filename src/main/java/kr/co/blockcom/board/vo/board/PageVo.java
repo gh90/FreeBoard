@@ -1,10 +1,9 @@
-package kr.co.blockcom.board.common.util.model;
+package kr.co.blockcom.board.vo.board;
 
-import kr.co.blockcom.board.vo.board.BoardFree;
 import lombok.Data;
 
 @Data
-public class PageVo extends BoardFree {
+public class PageVo extends BoardFree{
 	//페이지당 게시물 수
 	private int pagingSize;
 	//화면당 페이지 수

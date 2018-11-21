@@ -8,8 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import kr.co.blockcom.board.biz.boardfree.mapper.BoardFreeMapper;
-import kr.co.blockcom.board.common.util.model.PageVo;
 import kr.co.blockcom.board.vo.board.BoardFree;
+import kr.co.blockcom.board.vo.board.PageVo;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -69,6 +69,11 @@ public class BoardFreeService {
 	public List<BoardFree> selectPostList(PageVo reqVo) throws Exception{
 		logger.info("selectPostList : {}", reqVo);
 		return boardFreeMapper.selectPostList(reqVo);
+	}
+	
+	public PageVo selectPostListCount(PageVo reqVo) throws Exception{
+		logger.info("selectPostListCount : {}", reqVo);
+		return boardFreeMapper.selectPostListCount(reqVo);
 	}
 	
 	public List<BoardFree> postListWithSecret(PageVo reqVo) throws Exception{

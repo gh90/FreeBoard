@@ -9,10 +9,10 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import kr.co.blockcom.board.biz.boardfree.service.BoardFreeService;
 import kr.co.blockcom.board.common.util.PageUtil;
-import kr.co.blockcom.board.common.util.model.PageVo;
 import kr.co.blockcom.board.config.BtradeBoardWasSpringConfig;
 import kr.co.blockcom.board.config.DataSourceConfig;
 import kr.co.blockcom.board.vo.board.BoardFree;
+import kr.co.blockcom.board.vo.board.PageVo;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes={DataSourceConfig.class, BtradeBoardWasSpringConfig.class})
@@ -80,7 +80,7 @@ public class BoardContorllerTest {
 			e.printStackTrace();
 		}
 	}
-	@Test
+//	@Test
 	public void selectPostListTest(){
 		PageVo vo =new PageVo();
 		PageUtil pageUtil = new PageUtil();
@@ -98,6 +98,15 @@ public class BoardContorllerTest {
 		}
 		
 	}
-	
-	
+	@Test
+	public void selectPostListCountTest() {
+		PageVo vo =new PageVo();
+		try {
+			System.out.println(boardFreeService.selectPostListCount(vo));
+			vo.toString();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }
