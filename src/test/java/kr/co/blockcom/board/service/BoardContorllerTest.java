@@ -8,6 +8,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import kr.co.blockcom.board.biz.boardfree.service.BoardFreeService;
+import kr.co.blockcom.board.common.util.PageUtil;
+import kr.co.blockcom.board.common.util.model.PageVo;
 import kr.co.blockcom.board.config.BtradeBoardWasSpringConfig;
 import kr.co.blockcom.board.config.DataSourceConfig;
 import kr.co.blockcom.board.vo.board.BoardFree;
@@ -63,7 +65,7 @@ public class BoardContorllerTest {
 		}
 	}
 	
-	@Test
+//	@Test
 	public void updateCommentTest() {
 		BoardFree vo =new BoardFree();
 		vo.setSeq(70);
@@ -77,6 +79,24 @@ public class BoardContorllerTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	@Test
+	public void selectPostListTest(){
+		PageVo vo =new PageVo();
+		PageUtil pageUtil = new PageUtil();
+		vo.setCategory(1);
+		vo.setNowPage(1);
+		vo.setPagingSize(10);
+		vo.setBlockSize(10);
+		vo.setTotalPost(61);
+		pageUtil.setPaging(vo);
+		try {
+			System.out.println(boardFreeService.postListWithSecret(vo));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
 	

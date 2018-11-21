@@ -1,8 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 		<h2 align="center">게시판 리스트</h2>
-		
-		<div>
-			<input type="button" id="write" value="글쓰기">
+		<div style="text-align: center">
+			<div>
+				<input type="button" id="write" value="글쓰기">
+			</div>
 		</div>
 		<div>
 			<table width=700 summary="자유게시판 리스트" border="1" style="padding-top: 200;float: auto;text-align: center;margin-left: auto;margin-right: auto" >

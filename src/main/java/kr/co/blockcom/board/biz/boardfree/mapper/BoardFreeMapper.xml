@@ -34,6 +34,7 @@
 			notice_flag='N'
 		ORDER BY
 			seq DESC
+		limit #{startPost},#{pagingSize}
 	</select>
 	
     <select id="selectPost" parameterType="int" resultType="kr.co.blockcom.board.vo.board.BoardFree">

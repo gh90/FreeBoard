@@ -21,9 +21,12 @@ import org.springframework.web.servlet.ModelAndView;
 
 import kr.co.blockcom.board.biz.boardfree.service.BoardFreeService;
 import kr.co.blockcom.board.common.util.NullUtil;
+import kr.co.blockcom.board.common.util.PageUtil;
 import kr.co.blockcom.board.common.util.ResultCodeUtil;
+import kr.co.blockcom.board.common.util.model.PageVo;
 import kr.co.blockcom.board.common.util.model.ResultVo;
 import kr.co.blockcom.board.common.util.model.ReturnStatusCode;
+import kr.co.blockcom.board.common.util.model.pageListVo;
 import kr.co.blockcom.board.vo.board.BoardFree;
 import lombok.AllArgsConstructor;
 
@@ -36,6 +39,8 @@ public class BoardController {
 	private final BoardFreeService boardFreeService;
 	
 	private final ResultCodeUtil resultcodeutil;
+	
+	private final PageUtil pageUtil;
 		
 	@GetMapping("/list")
 	public String freeBoardList() {
@@ -128,15 +133,18 @@ public class BoardController {
 	
 //	글 리스트
 	@PostMapping("/postList")
-	public ResponseEntity<List<BoardFree>> postList(@RequestBody BoardFree vo) {
-		List<BoardFree> resultVoList=new ArrayList<>();
+	public ResponseEntity<ResultVo<pageListVo<BoardFree>>> postList(@RequestBody PageVo vo) {
+		ResultVo<pageListVo<BoardFree>> result = new ResultVo<pageListVo<BoardFree>>();
+		pageListVo<BoardFree> pageResult = new pageListVo<BoardFree>();
 		try {
-			resultVoList = boardFreeService.postListWithSecret(vo);
+			pageResult.setData(boardFreeService.postListWithSecret(vo)); ;
+			pageResult.setPageVo(pageUtil.setPaging(vo));
+			result = resultcodeutil.getResultInfo(ReturnStatusCode.SUCCESS,pageResult);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
 			e.printStackTrace();
 		}
-		return new ResponseEntity<List<BoardFree>>(resultVoList,HttpStatus.OK) ;
+		return new ResponseEntity<ResultVo<pageListVo<BoardFree>>>(result,HttpStatus.OK) ;
 	}
 	
 //	글수정 

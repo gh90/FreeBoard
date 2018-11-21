@@ -28,21 +28,22 @@ function fn_select_postList(){
 		contentType : 'application/json; charset=UTF-8',
 		success: function (data) {
 			var postList_html="";
+			var post_list = data.data;
 			
-			for(var temp_list in data ){
+			for(var post_element in post_list ){
 				postList_html+="<tr>";
-				postList_html+="<td>"+data[temp_list].seq+"</td>";
-				postList_html+="<td><a href='/board/postView?post_id="+data[temp_list].seq+"'>";
-				postList_html+=data[temp_list].title;
+				postList_html+="<td>"+post_list[post_element].seq+"</td>";
+				postList_html+="<td><a href='/board/postView?post_id="+post_list[post_element].seq+"'>";
+				postList_html+=post_list[post_element].title;
 				postList_html+="</a></td>";
 				postList_html+="<td>";
-				postList_html+=data[temp_list].writer;
+				postList_html+=post_list[post_element].writer;
 				postList_html+="</td>";
 				postList_html+="<td>";
-				postList_html+=data[temp_list].reg_date;
+				postList_html+=post_list[post_element].reg_date;
 				postList_html+="</td>";
 				postList_html+="<td>";
-				postList_html+=data[temp_list].view_count;
+				postList_html+=post_list[post_element].view_count;
 				postList_html+="</td>";
 				postList_html+="</tr>";
 				
