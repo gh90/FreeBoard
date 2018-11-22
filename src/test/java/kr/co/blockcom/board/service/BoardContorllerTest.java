@@ -30,6 +30,15 @@ public class BoardContorllerTest {
 			e.printStackTrace();
 		}
 	}
+	@Test
+	public void selectPostPassword() {
+		try {
+			System.out.println(boardFreeService.selectPostPassword(58));
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
 	
 //	@Test
 	public void insertCommentTest() {
@@ -68,9 +77,6 @@ public class BoardContorllerTest {
 		BoardFree vo =new BoardFree();
 		vo.setSeq(70);
 		vo.setContent("으,허허허허");
-		
-		
-		
 		try {
 			System.out.println(boardFreeService.updateComment(vo));
 		} catch (Exception e) {
@@ -78,15 +84,14 @@ public class BoardContorllerTest {
 			e.printStackTrace();
 		}
 	}
-//	@Test
+	@Test
 	public void selectPostListTest(){
-		BoardFree vo =new BoardFree();
+		BoardFree vo =new BoardFree();		
 		vo.setCategory(1);
 		vo.setNowPage(1);
 		vo.setPagingSize(10);
 		vo.setBlockSize(10);
-		vo.setTotalPost(61);
-//		PageUtil.setPaging(vo);
+		vo.setTotalPost(0);
 		try {
 			System.out.println(boardFreeService.postListWithSecret(vo));
 		} catch (Exception e) {
@@ -95,11 +100,11 @@ public class BoardContorllerTest {
 		}
 		
 	}
-	@Test
-	public void selectPostListCountTest() {
+//	@Test
+	public void selectPostCountTest() {
 		BoardFree vo =new BoardFree();
 		try {
-			System.out.println(boardFreeService.selectPostListCount(vo));
+			System.out.println(boardFreeService.selectPostCount(vo));
 			vo.toString();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

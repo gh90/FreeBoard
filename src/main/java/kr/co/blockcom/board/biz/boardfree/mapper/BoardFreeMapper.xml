@@ -37,7 +37,7 @@
 		limit #{startPost},#{pagingSize}
 	</select>
 
-	<select id="selectPostListCount" parameterType="kr.co.blockcom.board.vo.board.BoardFree" resultType="kr.co.blockcom.board.vo.board.BoardFree">
+	<select id="selectPostCount" parameterType="kr.co.blockcom.board.vo.board.BoardFree" resultType="int">
 		SELECT
 			count(*) AS totalPost
 	    FROM

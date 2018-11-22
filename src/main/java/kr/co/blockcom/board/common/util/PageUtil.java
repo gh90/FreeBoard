@@ -1,27 +1,29 @@
 package kr.co.blockcom.board.common.util;
 
+import org.springframework.stereotype.Component;
+
 import kr.co.blockcom.board.common.util.model.PageVo;
 
-
-public final class PageUtil {
+@Component
+public class PageUtil {
 	
 	private PageUtil() {
 		
 	}
 	
-	public static <T extends PageVo> T setPaging(T pageVo) {
+	public <T extends PageVo> T setPaging(T pageVo) {
 		//기본블록사이즈 10
 		pageVo.setBlockSize(3);	
 		return setDefaultPaging(pageVo);
 	}
 	
-	public static <T extends PageVo> T setPaging(T pageVo,int blockSize) {
+	public <T extends PageVo> T setPaging(T pageVo,int blockSize) {
 		//블록사이즈
 		pageVo.setBlockSize(blockSize);
 		return setDefaultPaging(pageVo);
 	}
 	
-	private static <T extends PageVo> T setDefaultPaging(T pageVo) {
+	private <T extends PageVo> T setDefaultPaging(T pageVo) {
 		if(pageVo.getBlockSize()<1) {
 			pageVo.setBlockSize(10);
 		}
@@ -31,7 +33,7 @@ public final class PageUtil {
 		if(pageVo.getNowPage()<1) {
 			pageVo.setNowPage(1);
 		}
-		pageVo.setTotalPage((int)(pageVo.getTotalPost()/pageVo.getPagingSize())+1);
+		pageVo.setTotalPage((int)((pageVo.getTotalPost()-1)/pageVo.getPagingSize())+1);
 		
 		if(pageVo.getNowPage()>pageVo.getTotalPage()) {
 			pageVo.setNowPage(pageVo.getTotalPage());

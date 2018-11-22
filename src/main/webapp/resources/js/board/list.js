@@ -22,7 +22,7 @@ function fn_select_postList(now_page){
 	
 	$.ajax({
 		type: 'post',
-		url: '/board/postList',
+		url: '/board/postList/xhr',
 		data: JSON.stringify(post_list_data),
 		dataType: "json",
 		contentType : 'application/json; charset=UTF-8',
@@ -35,7 +35,7 @@ function fn_select_postList(now_page){
 			for(var post_element in post_list ){
 				postList_html+="<tr>";
 				postList_html+="<td>"+post_list[post_element].seq+"</td>";
-				postList_html+="<td><a href='/board/postView?post_id="+post_list[post_element].seq+"'>";
+				postList_html+="<td><a href='/board/post/view?post_id="+post_list[post_element].seq+"'>";
 				postList_html+=post_list[post_element].title;
 				postList_html+="</a></td>";
 				postList_html+="<td>";

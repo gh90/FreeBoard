@@ -3,8 +3,6 @@ package kr.co.blockcom.board.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -17,14 +15,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 
 import kr.co.blockcom.board.biz.boardfree.service.BoardFreeService;
 import kr.co.blockcom.board.common.util.NullUtil;
 import kr.co.blockcom.board.common.util.ResultCodeUtil;
+import kr.co.blockcom.board.common.util.model.PageListVo;
 import kr.co.blockcom.board.common.util.model.ResultVo;
 import kr.co.blockcom.board.common.util.model.ReturnStatusCode;
-import kr.co.blockcom.board.common.util.model.pageListVo;
 import kr.co.blockcom.board.vo.board.BoardFree;
 import lombok.AllArgsConstructor;
 
@@ -38,33 +35,26 @@ public class BoardController {
 	
 	private final ResultCodeUtil resultcodeutil;
 		
-	@GetMapping("/list")
+	@GetMapping("/list/view")
 	public String freeBoardList() {
 		return "/board/list";
 	}
 	
-	@GetMapping("/write")
+	@GetMapping("/write/view")
 	public String freeBoardWrite() {		
 		return "/board/write";
 	}
 	
-	@PostMapping("/modify")
-	public ModelAndView freeBoardModify(@RequestBody BoardFree vo) {
-		ModelAndView mv =new ModelAndView("/board/modify");
-		
-		
-		return mv;
-	}
-	
-	@GetMapping("/postView")
+	@GetMapping("/post/view")
 	public String postView(Model model, @RequestParam String post_id) {
 		model.addAttribute("post_id", post_id);
 		return "/board/postView";
 	}
 	
 	//게시글 보기
-	@PostMapping(value = {"/postView"})
-	public ResponseEntity<ResultVo<BoardFree>> postView(@RequestParam(value="post_id") String seq,HttpSession session) {
+	@PostMapping(value = {"/post/view/xhr"})
+	public ResponseEntity<ResultVo<BoardFree>> postView(@RequestParam(value="post_id") String seq) {
+		logger.info("## post/view ##");
 		ResultVo<BoardFree> result = new ResultVo<BoardFree>();
 		BoardFree vo=new BoardFree();
 		try {
@@ -72,26 +62,12 @@ public class BoardController {
 			if(vo == null) {
 				result = resultcodeutil.getResultInfo(ReturnStatusCode.NO_POST);
 			}else {
-				long post_view_time = 0;
-				long current_time = System.currentTimeMillis();
-
-				if(session.getAttribute("post_view_time_"+seq)!=null) {
-					post_view_time = (long)session.getAttribute("post_view_time_"+seq);
-				}
-				
-				session.setAttribute("post_view_time_"+seq, current_time);				
-				
-				if(current_time-post_view_time>10*1000 &&!"Y".equals(vo.getSecret_flag())) {
-					boardFreeService.updateViewCount(vo);
-				}
-				
 				vo = boardFreeService.selectPost(Integer.parseInt(seq));
 				
 				if("Y".equals(vo.getSecret_flag())) {
 					vo.setTitle("[비밀글]"+vo.getTitle());
 					vo.setContent("비밀글입니다.");
 				}
-				
 				result = resultcodeutil.getResultInfo(ReturnStatusCode.SUCCESS, vo);
 			}
 			
@@ -106,17 +82,17 @@ public class BoardController {
 	}
 	
 //	글등록 
-	@PostMapping(value = {"/writeSubmit"},consumes=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ResultVo<Integer>> writeSubmit(@RequestBody BoardFree vo){
+	@PostMapping(value = {"/write/xhr"},consumes=MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ResultVo<Integer>> writeSubmit(@RequestBody BoardFree boardFree){
 		ResultVo<Integer> result = new ResultVo<Integer>();
-		logger.info("## writeSubmit ##");
+		logger.info("## write/xhr ##");
 		
 		try {
-			if(NullUtil.isNullAll(vo, vo.getTitle(),vo.getContent(),vo.getPassword(),vo.getWriter(),vo.getCategory())){
-				logger.info("writeSubmit Parameter NULL");
-				result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
-			}else if(1==boardFreeService.insertPost(vo)) {
-				result = resultcodeutil.getResultInfo(ReturnStatusCode.SUCCESS,vo.getSeq());
+			if(NullUtil.isNullAll(boardFree, boardFree.getTitle(),boardFree.getContent(),boardFree.getPassword(),boardFree.getWriter(),boardFree.getCategory())){
+				logger.info("write/xhr Parameter NULL");
+				result = resultcodeutil.getResultInfo(ReturnStatusCode.INVALID_PARAMETER);
+			}else if(1==boardFreeService.insertPost(boardFree)) {
+				result = resultcodeutil.getResultInfo(ReturnStatusCode.SUCCESS,boardFree.getSeq());
 			}else {
 				result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
 			}
@@ -128,44 +104,53 @@ public class BoardController {
 	}
 	
 //	글 리스트
-	@PostMapping("/postList")
-	public ResponseEntity<ResultVo<pageListVo<BoardFree>>> postList(@RequestBody BoardFree vo) {
-		ResultVo<pageListVo<BoardFree>> result = new ResultVo<pageListVo<BoardFree>>();
-		pageListVo<BoardFree> pageResult = new pageListVo<BoardFree>();
+	@PostMapping("/postList/xhr")
+	public ResponseEntity<ResultVo<PageListVo<BoardFree>>> postList(@RequestBody BoardFree vo) {
+		ResultVo<PageListVo<BoardFree>> result = new ResultVo<PageListVo<BoardFree>>();
+		PageListVo<BoardFree> pageResult = new PageListVo<BoardFree>();
 		try {
-			vo.setTotalPost(boardFreeService.selectPostListCount(vo).getTotalPost());
-			pageResult.setData(boardFreeService.postListWithSecret(vo));
-			pageResult.setPageVo(vo);
-			result = resultcodeutil.getResultInfo(ReturnStatusCode.SUCCESS,pageResult);
+			if(NullUtil.isNullAll(vo,vo.getCategory(),vo.getNowPage())) {
+				result = resultcodeutil.getResultInfo(ReturnStatusCode.INVALID_PARAMETER);
+			}else {
+				pageResult = boardFreeService.postListWithSecret(vo);
+				result = resultcodeutil.getResultInfo(ReturnStatusCode.SUCCESS,pageResult);				
+			}
+			
 		} catch (Exception e) {
 			result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
 			e.printStackTrace();
 		}
-		return new ResponseEntity<ResultVo<pageListVo<BoardFree>>>(result,HttpStatus.OK) ;
+		return new ResponseEntity<ResultVo<PageListVo<BoardFree>>>(result,HttpStatus.OK) ;
 	}
 	
 //	글수정 
-	@PostMapping(value = {"/modifySubmit"},consumes=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ResultVo<Integer>> modifySubmit(@RequestBody BoardFree vo){
+	@PostMapping(value = {"/modify/xhr"},consumes=MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ResultVo<Integer>> modifySubmit(@RequestBody BoardFree boardFree){
 		ResultVo<Integer> result = new ResultVo<Integer>();
 		BoardFree passwordVo =new BoardFree();
-		logger.info("## modifySubmit ##");
+		logger.info("## modify/xhr ##");
 		try {
-			passwordVo=boardFreeService.selectPostPassword(vo.getSeq());
-			if(NullUtil.isNullAll(vo,vo.getSeq(),vo.getContent(),vo.getPassword())) {
-				result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
-			}else if(!passwordVo.getPassword().equals(vo.getPassword())){
-				result = resultcodeutil.getResultInfo(ReturnStatusCode.WRONG_PASSWORD);
-			}else if(passwordVo.getPassword().equals(vo.getPassword())) {
-				int updateResult=boardFreeService.updatePost(vo);
-				if(updateResult==1) {
-					result = resultcodeutil.getResultInfo(ReturnStatusCode.SUCCESS);
+			if(NullUtil.isNullAll(boardFree,boardFree.getSeq(),boardFree.getContent(),boardFree.getPassword())) {
+				result = resultcodeutil.getResultInfo(ReturnStatusCode.INVALID_PARAMETER);
+			}else {
+				passwordVo=boardFreeService.selectPostPassword(boardFree.getSeq());
+				
+				if(NullUtil.isNullAll(passwordVo,passwordVo.getPassword())) {
+					result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
+				}else if(!passwordVo.getPassword().equals(boardFree.getPassword())){
+					result = resultcodeutil.getResultInfo(ReturnStatusCode.WRONG_PASSWORD);
+				}else if(passwordVo.getPassword().equals(boardFree.getPassword())) {
+					int updateResult=boardFreeService.updatePost(boardFree);
+					if(updateResult==1) {
+						result = resultcodeutil.getResultInfo(ReturnStatusCode.SUCCESS);
+					}else{
+						result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
+					}
 				}else{
 					result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
 				}
-			}else{
-				result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
 			}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
@@ -174,24 +159,24 @@ public class BoardController {
 	}
 	
 //	글삭제 
-	@PostMapping(value = {"/deleteSubmit"})
+	@PostMapping(value = {"/delete/xhr"})
 	public ResponseEntity<ResultVo<Integer>> deleteSubmit(@RequestParam(value="post_id") String seq,@RequestParam(value="delete_password") String password){
 		ResultVo<Integer> result = new ResultVo<Integer>();
 		BoardFree passwordVo =new BoardFree();
-		logger.info("## deleteSubmit ##");
+		logger.info("## delete/xhr ##");
 		try {			
 			passwordVo = boardFreeService.selectPostPassword(Integer.parseInt(seq));
-			if(null == password || "".equals(password)) {
+			if(NullUtil.isNullAll(password,passwordVo,passwordVo.getPassword())) {
 				result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
 			}else if(passwordVo.getPassword().equals(password)) {
 				int deleteResult=boardFreeService.deletePost(Integer.parseInt(seq));
 				if(1==deleteResult) {
 					result = resultcodeutil.getResultInfo(ReturnStatusCode.SUCCESS);
 				}else {
-					result = resultcodeutil.getResultInfo(ReturnStatusCode.WRONG_PASSWORD);
+					result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
 				}
 			}else {
-				result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
+				result = resultcodeutil.getResultInfo(ReturnStatusCode.WRONG_PASSWORD);
 			}
 		} catch (NumberFormatException e) {
 			result = resultcodeutil.getResultInfo(ReturnStatusCode.INVALID_PAGE);
@@ -204,14 +189,15 @@ public class BoardController {
 	}
 	
 	//비밀글 보기
-	@PostMapping(value = {"/secretView"})
+	@PostMapping(value = {"/secretView/xhr"})
 	public ResponseEntity<ResultVo<BoardFree>> secretView(@RequestParam(value="post_id") String seq,@RequestParam(value="secret_password") String password){
+		logger.info("## secretView/xhr ##");
 		ResultVo<BoardFree> result = new ResultVo<BoardFree>();
 		BoardFree returnVo = new BoardFree();
 		BoardFree passwordVo = new BoardFree();
 		try {			
 			passwordVo = boardFreeService.selectPostPassword(Integer.parseInt(seq));
-			if(null == password || "".equals(password)) {
+			if(NullUtil.isNullAll(password,passwordVo,passwordVo.getPassword())) {
 				result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
 			}else if(passwordVo.getPassword().equals(password)) {
 				returnVo=boardFreeService.selectPost(Integer.parseInt(seq));
@@ -232,14 +218,13 @@ public class BoardController {
 	}
 	
 	//댓글 등록
-	@PostMapping(value = {"/writeCommentSubmit"},consumes=MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = {"/writeComment/xhr"},consumes=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ResultVo<Integer>> writeCommentSubmit(@RequestBody BoardFree vo){
 		ResultVo<Integer> result = new ResultVo<Integer>();
-		logger.info("## writeCommentSubmit ##");
+		logger.info("## writeComment/xhr ##");
 		
 		try {
 			if(NullUtil.isNullAll(vo,vo.getContent(),vo.getPassword(),vo.getWriter(),vo.getParent_seq(),vo.getCategory())){
-				logger.info("writeCommentSubmit Parameter NULL");
 				result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
 			}else if(1==boardFreeService.insertComment(vo)) {
 				result = resultcodeutil.getResultInfo(ReturnStatusCode.SUCCESS,vo.getParent_seq());
@@ -254,27 +239,30 @@ public class BoardController {
 	}
 	
 	//댓글 수정
-	@PostMapping(value = {"/modifyCommentSubmit"},consumes=MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = {"/modifyComment/xhr"},consumes=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ResultVo<Integer>> modifyCommentSubmit(@RequestBody BoardFree vo){
 		ResultVo<Integer> result = new ResultVo<Integer>();
 		BoardFree passwordVo =new BoardFree();
-		logger.info("## modifyCommentSubmit ##");
+		logger.info("## modifyComment/xhr ##");
 		
 		try {
-			passwordVo = boardFreeService.selectCommentPassword(vo.getSeq());
-			if(NullUtil.isNullAll(vo,vo.getSeq(),vo.getContent(),vo.getPassword())){
-				logger.info("modifyCommentSubmit Parameter NULL");
-				result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
-			}else if(vo.getPassword().equals(passwordVo.getPassword())){
-				if(1==boardFreeService.updateComment(vo)) {
-					result = resultcodeutil.getResultInfo(ReturnStatusCode.SUCCESS,vo.getParent_seq());
-				}else {
+			if(NullUtil.isNullAll(vo,vo.getSeq(),vo.getContent(),vo.getPassword())) {
+				result = resultcodeutil.getResultInfo(ReturnStatusCode.INVALID_PARAMETER);
+			}else {
+				passwordVo = boardFreeService.selectCommentPassword(vo.getSeq());
+				if(NullUtil.isNullAll(passwordVo,passwordVo.getPassword())){
+					result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
+				}else if(vo.getPassword().equals(passwordVo.getPassword())){
+					if(1==boardFreeService.updateComment(vo)) {
+						result = resultcodeutil.getResultInfo(ReturnStatusCode.SUCCESS,vo.getParent_seq());
+					}else {
+						result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
+					}
+				}else if(!vo.getPassword().equals(passwordVo.getPassword())){
+					result = resultcodeutil.getResultInfo(ReturnStatusCode.WRONG_PASSWORD);
+				}else{
 					result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
 				}
-			}else if(!vo.getPassword().equals(passwordVo.getPassword())){
-				result = resultcodeutil.getResultInfo(ReturnStatusCode.WRONG_PASSWORD);
-			}else{
-				result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -285,27 +273,31 @@ public class BoardController {
 	
 	//댓글 삭제
 	
-	@PostMapping(value = {"/deleteCommentSubmit"},consumes=MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = {"/deleteComment/xhr"},consumes=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ResultVo<Integer>> deleteCommentSubmit(@RequestBody BoardFree vo){
 		ResultVo<Integer> result = new ResultVo<Integer>();
 		BoardFree passwordVo =new BoardFree();
-		logger.info("## deleteCommentSubmit ##");
+		logger.info("## deleteComment/xhr ##");
 		
 		try {
-			passwordVo = boardFreeService.selectCommentPassword(vo.getSeq());
-			if(NullUtil.isNullAll(vo,vo.getSeq(),vo.getPassword())){
-				logger.info("deleteCommentSubmit Parameter NULL");
-				result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
-			}else if(vo.getPassword().equals(passwordVo.getPassword())){
-				if(1==boardFreeService.deleteComment(vo.getSeq())) {
-					result = resultcodeutil.getResultInfo(ReturnStatusCode.SUCCESS,vo.getParent_seq());
-				}else {
+			if(NullUtil.isNullAll(vo,vo.getSeq(),vo.getPassword())) {
+				result = resultcodeutil.getResultInfo(ReturnStatusCode.INVALID_PARAMETER);
+			}else {
+				passwordVo = boardFreeService.selectCommentPassword(vo.getSeq());
+				if(NullUtil.isNullAll(passwordVo,passwordVo.getPassword())){
+					result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
+				}else if(vo.getPassword().equals(passwordVo.getPassword())){
+					if(1==boardFreeService.deleteComment(vo.getSeq())) {
+						result = resultcodeutil.getResultInfo(ReturnStatusCode.SUCCESS,vo.getParent_seq());
+					}else {
+						result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
+					}
+				}else if(!vo.getPassword().equals(passwordVo.getPassword())){
+					result = resultcodeutil.getResultInfo(ReturnStatusCode.WRONG_PASSWORD);
+				}else{
 					result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
 				}
-			}else if(!vo.getPassword().equals(passwordVo.getPassword())){
-				result = resultcodeutil.getResultInfo(ReturnStatusCode.WRONG_PASSWORD);
-			}else{
-				result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
+				
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -314,29 +306,21 @@ public class BoardController {
 		return new ResponseEntity<ResultVo<Integer>>(result , HttpStatus.OK);
 	}
 	
-	@PostMapping("/commentList")
-	public ResponseEntity<List<BoardFree>> commentList(@RequestBody BoardFree vo) {
+	@PostMapping("/commentList/xhr")
+	public ResponseEntity<ResultVo<List<BoardFree>>> commentList(@RequestBody BoardFree vo) {
 		List<BoardFree> resultVoList=new ArrayList<>();
+		ResultVo<List<BoardFree>> result = new ResultVo<List<BoardFree>>();
 		try {
-			resultVoList = boardFreeService.selectCommentList(vo);
+			if(NullUtil.isNullAll(vo,vo.getParent_seq())) {
+				result = resultcodeutil.getResultInfo(ReturnStatusCode.INVALID_PARAMETER);
+			}else {
+				resultVoList = boardFreeService.selectCommentList(vo);
+				result = resultcodeutil.getResultInfo(ReturnStatusCode.SUCCESS,resultVoList);
+			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
 			e.printStackTrace();
 		}
-		return new ResponseEntity<List<BoardFree>>(resultVoList,HttpStatus.OK) ;
+		return new ResponseEntity<ResultVo<List<BoardFree>>>(result,HttpStatus.OK) ;
 	}
-	
-	
-	@GetMapping("/test")
-	public String testList() {
-		String test="";
-		try {
-//			test = boardFreeService.selectPost(new HashMap<String,Object>()).toString();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return test;
-	}
-
 }

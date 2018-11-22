@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class pageListVo<E> {
+public class PageListVo<E> {
 	private E pageVo;
 	private List<E> data;
 }

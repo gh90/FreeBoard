@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import kr.co.blockcom.board.biz.boardfree.mapper.BoardFreeMapper;
 import kr.co.blockcom.board.common.util.PageUtil;
-import kr.co.blockcom.board.common.util.model.PageVo;
+import kr.co.blockcom.board.common.util.model.PageListVo;
 import kr.co.blockcom.board.vo.board.BoardFree;
 import lombok.AllArgsConstructor;
 
@@ -19,6 +19,8 @@ public class BoardFreeService {
 	private static final Logger logger = LoggerFactory.getLogger(BoardFreeMapper.class);
 	
 	private final BoardFreeMapper boardFreeMapper;
+	
+	private final PageUtil pageUtil;
 	
 	public BoardFree selectPost(int seq) throws Exception{
 		logger.info("selectPost : {}", seq);
@@ -72,22 +74,26 @@ public class BoardFreeService {
 		return boardFreeMapper.selectPostList(reqVo);
 	}
 	
-	public BoardFree selectPostListCount(BoardFree reqVo) throws Exception{
-		logger.info("selectPostListCount : {}", reqVo);
-		return boardFreeMapper.selectPostListCount(reqVo);
+	public int selectPostCount(BoardFree reqVo) throws Exception{
+		logger.info("selectPostCount : {}", reqVo);
+		return boardFreeMapper.selectPostCount(reqVo);
 	}
 	
-	public List<BoardFree> postListWithSecret(BoardFree reqVo) throws Exception{
-		logger.info("selectpostListWtihSecret : {}", reqVo);
-		List<BoardFree> returnList = new ArrayList<>();
-		reqVo=PageUtil.setPaging(reqVo);
-		returnList=selectPostList(reqVo);
+	public PageListVo<BoardFree> postListWithSecret(BoardFree reqVo) throws Exception{
+		logger.info("postListWithSecret : {}", reqVo);
+		PageListVo<BoardFree> returnList = new PageListVo<BoardFree>();
+		List<BoardFree> pageList = new ArrayList<BoardFree>();
+		reqVo.setTotalPost(selectPostCount(reqVo));
+		pageUtil.setPaging(reqVo);
+		pageList = selectPostList(reqVo);
 		
-		for(BoardFree vo :returnList) {
+		for(BoardFree vo :pageList) {
 			if("Y".equals(vo.getSecret_flag())) {
 				vo.setTitle("[비밀글]"+vo.getTitle());
 			}
 		}
+		returnList.setData(pageList);
+		returnList.setPageVo(reqVo);
 		
 		return returnList;
 	}
@@ -96,7 +102,7 @@ public class BoardFreeService {
 	//대글 관련
 	
 	public int insertComment(BoardFree boardFree) throws Exception{
-		logger.info("insertPost : {}", boardFree);
+		logger.info("insertComment : {}", boardFree);
 		return boardFreeMapper.insertComment(boardFree);
 	}
 	
