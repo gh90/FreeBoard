@@ -83,7 +83,7 @@ public class BoardController {
 	
 //	글등록 
 	@PostMapping(value = {"/write/xhr"},consumes=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ResultVo<Integer>> writeSubmit(@RequestBody BoardFree boardFree){
+	public ResponseEntity<ResultVo<Integer>> write(@RequestBody BoardFree boardFree){
 		ResultVo<Integer> result = new ResultVo<Integer>();
 		logger.info("## write/xhr ##");
 		
@@ -125,7 +125,7 @@ public class BoardController {
 	
 //	글수정 
 	@PostMapping(value = {"/modify/xhr"},consumes=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ResultVo<Integer>> modifySubmit(@RequestBody BoardFree boardFree){
+	public ResponseEntity<ResultVo<Integer>> modify(@RequestBody BoardFree boardFree){
 		ResultVo<Integer> result = new ResultVo<Integer>();
 		BoardFree passwordVo =new BoardFree();
 		logger.info("## modify/xhr ##");
@@ -160,7 +160,7 @@ public class BoardController {
 	
 //	글삭제 
 	@PostMapping(value = {"/delete/xhr"})
-	public ResponseEntity<ResultVo<Integer>> deleteSubmit(@RequestParam(value="post_id") String seq,@RequestParam(value="delete_password") String password){
+	public ResponseEntity<ResultVo<Integer>> delete(@RequestParam(value="post_id") String seq,@RequestParam(value="delete_password") String password){
 		ResultVo<Integer> result = new ResultVo<Integer>();
 		BoardFree passwordVo =new BoardFree();
 		logger.info("## delete/xhr ##");
@@ -169,7 +169,7 @@ public class BoardController {
 			if(NullUtil.isNullAll(password,passwordVo,passwordVo.getPassword())) {
 				result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
 			}else if(passwordVo.getPassword().equals(password)) {
-				int deleteResult=boardFreeService.deletePost(Integer.parseInt(seq));
+				int deleteResult=boardFreeService.updatePostDeleteFlag(Integer.parseInt(seq));
 				if(1==deleteResult) {
 					result = resultcodeutil.getResultInfo(ReturnStatusCode.SUCCESS);
 				}else {
@@ -219,7 +219,7 @@ public class BoardController {
 	
 	//댓글 등록
 	@PostMapping(value = {"/writeComment/xhr"},consumes=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ResultVo<Integer>> writeCommentSubmit(@RequestBody BoardFree vo){
+	public ResponseEntity<ResultVo<Integer>> writeComment(@RequestBody BoardFree vo){
 		ResultVo<Integer> result = new ResultVo<Integer>();
 		logger.info("## writeComment/xhr ##");
 		
@@ -240,7 +240,7 @@ public class BoardController {
 	
 	//댓글 수정
 	@PostMapping(value = {"/modifyComment/xhr"},consumes=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ResultVo<Integer>> modifyCommentSubmit(@RequestBody BoardFree vo){
+	public ResponseEntity<ResultVo<Integer>> modifyComment(@RequestBody BoardFree vo){
 		ResultVo<Integer> result = new ResultVo<Integer>();
 		BoardFree passwordVo =new BoardFree();
 		logger.info("## modifyComment/xhr ##");
@@ -274,7 +274,7 @@ public class BoardController {
 	//댓글 삭제
 	
 	@PostMapping(value = {"/deleteComment/xhr"},consumes=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ResultVo<Integer>> deleteCommentSubmit(@RequestBody BoardFree vo){
+	public ResponseEntity<ResultVo<Integer>> deleteComment(@RequestBody BoardFree vo){
 		ResultVo<Integer> result = new ResultVo<Integer>();
 		BoardFree passwordVo =new BoardFree();
 		logger.info("## deleteComment/xhr ##");
@@ -287,7 +287,7 @@ public class BoardController {
 				if(NullUtil.isNullAll(passwordVo,passwordVo.getPassword())){
 					result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
 				}else if(vo.getPassword().equals(passwordVo.getPassword())){
-					if(1==boardFreeService.deleteComment(vo.getSeq())) {
+					if(1==boardFreeService.updateCommentDeleteFlag(vo.getSeq())) {
 						result = resultcodeutil.getResultInfo(ReturnStatusCode.SUCCESS,vo.getParent_seq());
 					}else {
 						result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
@@ -297,7 +297,6 @@ public class BoardController {
 				}else{
 					result = resultcodeutil.getResultInfo(ReturnStatusCode.FAIL);
 				}
-				
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -124,7 +124,7 @@
 			password = #{password}
 	</update>
 
-	<update id="deletePost" parameterType="kr.co.blockcom.board.vo.board.BoardFree">
+	<update id="updatePostDeleteFlag" parameterType="kr.co.blockcom.board.vo.board.BoardFree">
 		UPDATE board_free
 		SET
 			delete_flag='Y'
@@ -200,7 +200,7 @@
 			password = #{password}
 	</update>
 
-	<update id="deleteComment" parameterType="kr.co.blockcom.board.vo.board.BoardFree">
+	<update id="updateCommentDeleteFlag" parameterType="kr.co.blockcom.board.vo.board.BoardFree">
 		UPDATE board_free
 		SET
 			delete_flag = 'Y'

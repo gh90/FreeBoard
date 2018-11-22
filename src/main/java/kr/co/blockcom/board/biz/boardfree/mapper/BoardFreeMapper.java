@@ -38,11 +38,11 @@ public interface BoardFreeMapper {
 	 int updatePost(BoardFree boardFree) throws Exception;
 	 
 	 /**
-		 * 글 삭제
+		 * 글 삭제플래그 변경
 		 * @param seq
 		 * @return
 		 */
-	 int deletePost(int seq) throws Exception;
+	 int updatePostDeleteFlag(int seq) throws Exception;
 	 
 	 /**
 		 * 조회수 증가
@@ -87,11 +87,11 @@ public interface BoardFreeMapper {
 	int updateComment(BoardFree boardFree) throws Exception;
 	
 	/**
-	 * 댓글 삭제
+	 * 댓글 삭제플래그 업데이트
 	 * @param seq
 	 * @return
 	 */
-	int deleteComment(int seq) throws Exception;
+	int updateCommentDeleteFlag(int seq) throws Exception;
 	
 	
 }

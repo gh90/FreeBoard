@@ -59,9 +59,9 @@ public class BoardFreeService {
 		return boardFreeMapper.updatePost(boardFree);
 	}
 	
-	public int deletePost(int seq) throws Exception{
-		logger.info("updatePost : {}", seq);
-		return boardFreeMapper.deletePost(seq);
+	public int updatePostDeleteFlag(int seq) throws Exception{
+		logger.info("updatePostDeleteFlag : {}", seq);
+		return boardFreeMapper.updatePostDeleteFlag(seq);
 	}
 	
 	public int updateViewCount(BoardFree boardFree) throws Exception{
@@ -116,9 +116,9 @@ public class BoardFreeService {
 		return boardFreeMapper.updateComment(boardFree);
 	}
 	
-	public int deleteComment(int seq) throws Exception{
-		logger.info("deleteComment : {}", seq);
-		return boardFreeMapper.deleteComment(seq);
+	public int updateCommentDeleteFlag(int seq) throws Exception{
+		logger.info("updateCommentDeleteFlag : {}", seq);
+		return boardFreeMapper.updateCommentDeleteFlag(seq);
 	}
 	
 
