@@ -4,7 +4,7 @@
 
 $(document).ready(function(){
 	$("#write").on("click",function(){
-		location.href="/board/write";
+		location.href="/board/write/view";
 	})
 	
 	
@@ -42,7 +42,7 @@ function fn_select_postList(now_page){
 				postList_html+=post_list[post_element].writer;
 				postList_html+="</td>";
 				postList_html+="<td>";
-				postList_html+=post_list[post_element].reg_date;
+				postList_html+= moment.unix(post_list[post_element].reg_date/1000).format("YY/MM/DD HH:MM");
 				postList_html+="</td>";
 				postList_html+="<td>";
 				postList_html+=post_list[post_element].view_count;

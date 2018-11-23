@@ -81,10 +81,12 @@ function fn_post_view(post_id){
 		success: function (json) {
 			if("0000"==json.code){
 				$("#category").text(json.data.category);
-				$("#mod_date").text(json.data.mod_date);
+				if(json.data.mod_date != null){
+					$("#mod_date").text(moment.unix(json.data.mod_date/1000).format("YY/MM/DD HH:MM"));
+				}
 				$("#title").text(json.data.title);
 				$("#writer").text(json.data.writer);
-				$("#reg_date").text(json.data.reg_date);
+				$("#reg_date").text(moment.unix(json.data.reg_date/1000).format("YY/MM/DD HH:MM"));
 				$("#content").html(json.data.content);
 				$("#view_count").text(json.data.view_count);
 				
@@ -308,7 +310,7 @@ function fn_select_commentList(){
 				for(var temp_list in comment_data ){
 					commentList_html+="<tbody class='comment' data-cmtid="+comment_data[temp_list].seq+">"
 					commentList_html+="<tr>";
-					commentList_html+="<td>"+comment_data[temp_list].writer+"</td><td>등록 시간 : "+comment_data[temp_list].reg_date+"</td>";
+					commentList_html+="<td>"+comment_data[temp_list].writer+"</td><td>등록 시간 : "+moment.unix(comment_data[temp_list].reg_date/1000).format('YY/MM/DD HH:MM')+"</td>";
 					commentList_html+="<td colspan='2' style='text-align:right'><input type='button' data-type='modify' class='cmt_mod_hide cmt_del_hide' value='수정하기'><input type='button' data-type='delete' class='cmt_mod_hide cmt_del_hide' value='삭제하기'>"
 					commentList_html+="<div class='cmt_mod_show cmt_del_show' style='display:none'><input type='password'><input type='button' data-type='ok' data-detail='' value='확인'><input type='button' data-type='cancel' data-detail='' value='취소'></div></td>"
 					commentList_html+="</tr>"

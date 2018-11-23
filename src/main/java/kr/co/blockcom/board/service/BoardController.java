@@ -62,6 +62,7 @@ public class BoardController {
 			if(vo == null) {
 				result = resultcodeutil.getResultInfo(ReturnStatusCode.NO_POST);
 			}else {
+				boardFreeService.updateViewCount(vo);
 				vo = boardFreeService.selectPost(Integer.parseInt(seq));
 				
 				if("Y".equals(vo.getSecret_flag())) {

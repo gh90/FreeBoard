@@ -22,7 +22,6 @@ public class BoardContorllerTest {
 	
 //	@Test
 	public void selectPostTest() {
-		System.out.println("test");
 		try {
 			System.out.println(boardFreeService.selectPost(58));
 		} catch (Exception e) {
@@ -30,14 +29,122 @@ public class BoardContorllerTest {
 			e.printStackTrace();
 		}
 	}
-	@Test
-	public void selectPostPassword() {
+//	@Test
+	public void selectPostPasswordTest() {
 		try {
 			System.out.println(boardFreeService.selectPostPassword(58));
 			
 		} catch (Exception e) {
 			// TODO: handle exception
+			e.printStackTrace();
 		}
+	}
+	
+//	@Test
+	public void selectCommentPasswordTest() {
+		try {
+			System.out.println(boardFreeService.selectCommentPassword(73));
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+	}
+	
+//	@Test
+	public void insertPostTest() {
+		BoardFree vo =new BoardFree();
+		vo.setTitle("제목 1");
+		vo.setContent("테스트");
+		vo.setWriter("테스터");
+		vo.setPassword("1234");
+		vo.setCategory(1);
+		vo.setSecret_flag("N");
+		vo.setComment_flag("N");
+		vo.setNotice_flag("N");
+		try {
+			System.out.println(boardFreeService.insertPost(vo));
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
+	
+//	@Test
+	public void updatePostTest() {
+		BoardFree vo =new BoardFree();
+		vo.setSeq(79);
+		vo.setTitle("제목 1");
+		vo.setContent("테슽으 1231");
+		vo.setPassword("1234");
+		
+		try {
+			System.out.println(boardFreeService.updatePost(vo));
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
+	
+//	@Test
+	public void updatePostDeleteFlagTest() {
+		try {
+			System.out.println(boardFreeService.updatePostDeleteFlag(79));
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
+	
+//	@Test
+	public void updateViewCountTest() {
+		BoardFree vo =new BoardFree();
+		vo.setSeq(78);
+		try {
+			System.out.println(boardFreeService.updateViewCount(vo));
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
+	
+//	@Test
+	public void selectPostListTest(){
+		BoardFree vo =new BoardFree();
+		vo.setStartPost(10);
+		vo.setPagingSize(10);
+		
+		try {
+			System.out.println(boardFreeService.selectPostList(vo));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+//	@Test
+	public void selectPostCountTest() {
+		BoardFree vo =new BoardFree();
+		try {
+			System.out.println(boardFreeService.selectPostCount(vo));
+			vo.toString();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+//	@Test
+	public void postListWithSecretTest(){
+		BoardFree vo =new BoardFree();		
+		vo.setCategory(1);
+		vo.setNowPage(1);
+		vo.setPagingSize(10);
+		vo.setBlockSize(10);
+		try {
+			System.out.println(boardFreeService.postListWithSecret(vo));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
 //	@Test
@@ -59,7 +166,7 @@ public class BoardContorllerTest {
 	}
 	
 //	@Test
-	public void selectCommentTest() {
+	public void selectCommentListTest() {
 		BoardFree vo =new BoardFree();
 		vo.setParent_seq(6);
 		
@@ -84,31 +191,15 @@ public class BoardContorllerTest {
 			e.printStackTrace();
 		}
 	}
+	
 	@Test
-	public void selectPostListTest(){
-		BoardFree vo =new BoardFree();		
-		vo.setCategory(1);
-		vo.setNowPage(1);
-		vo.setPagingSize(10);
-		vo.setBlockSize(10);
-		vo.setTotalPost(0);
+	public void updateCommentDeleteFlagTest() {
 		try {
-			System.out.println(boardFreeService.postListWithSecret(vo));
+			System.out.println(boardFreeService.updateCommentDeleteFlag(77));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-	}
-//	@Test
-	public void selectPostCountTest() {
-		BoardFree vo =new BoardFree();
-		try {
-			System.out.println(boardFreeService.selectPostCount(vo));
-			vo.toString();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 }

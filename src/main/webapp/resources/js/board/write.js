@@ -23,7 +23,7 @@ $("#submit").on("click",function(){
 })
 
 $("#post_list").on("click",function(){
-	location.href="/board/list";
+	location.href="/board/list/view";
 })
 
 function fn_post_register(){
@@ -40,14 +40,14 @@ function fn_post_register(){
 	
 	$.ajax({
 		type: 'post',
-		url: '/board/writeSubmit',
+		url: '/board/write/xhr',
 		data: JSON.stringify(register_data),
 		dataType: "json",
 		contentType : 'application/json; charset=UTF-8',
 		success: function (json) {
 			if("0000"==json.code){
 				alert("글이 등록되었습니다.");
-				location.href ="/board/postView?post_id="+json.data
+				location.href ="/board/post/view?post_id="+json.data
 			}else{
 				alert(json.message);
 			}

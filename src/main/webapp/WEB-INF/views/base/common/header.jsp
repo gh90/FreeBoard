@@ -6,5 +6,6 @@
 		<title>자유 게시판</title>
 		
 		<script src="/resources/js/common/jquery.min.js"></script>
+		<script src="/resources/js/common/moment.js"></script>
 	</head> 
 	<body>
