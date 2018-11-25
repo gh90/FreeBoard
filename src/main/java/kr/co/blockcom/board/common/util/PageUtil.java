@@ -33,7 +33,12 @@ public class PageUtil {
 		if(pageVo.getNowPage()<1) {
 			pageVo.setNowPage(1);
 		}
-		pageVo.setTotalPage((int)((pageVo.getTotalPost()-1)/pageVo.getPagingSize())+1);
+		
+		if(pageVo.getTotalPost()<1) {
+			pageVo.setTotalPage(1);
+		}else {
+			pageVo.setTotalPage((int)((pageVo.getTotalPost()-1)/pageVo.getPagingSize())+1);
+		}
 		
 		if(pageVo.getNowPage()>pageVo.getTotalPage()) {
 			pageVo.setNowPage(pageVo.getTotalPage());
